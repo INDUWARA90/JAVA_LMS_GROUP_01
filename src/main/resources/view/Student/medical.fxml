@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml">
+
+    <TableView prefHeight="350">
+
+        <columns>
+            <TableColumn text="Date"/>
+            <TableColumn text="Subject"/>
+            <TableColumn text="Reason"/>
+            <TableColumn text="Approved"/>
+        </columns>
+
+    </TableView>
+
+</VBox>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml">
+
+    <TableView prefHeight="300">
+
+        <columns>
+            <TableColumn text="Subject"/>
+            <TableColumn text="Marks"/>
+            <TableColumn text="Grade"/>
+        </columns>
+
+    </TableView>
+
+    <Label text="SGPA : "/>
+    <Label text="CGPA : "/>
+
+</VBox>
