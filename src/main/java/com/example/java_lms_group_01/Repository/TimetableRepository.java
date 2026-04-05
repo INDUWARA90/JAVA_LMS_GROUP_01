@@ -15,7 +15,7 @@ import java.util.List;
 public class TimetableRepository {
 
     private static final String BASE_SELECT =
-            "SELECT time_table_id, department, lec_id, courseCode, admin_id, day, start_time, end_time, session_type FROM timeTable";
+            "SELECT time_table_id, department, lec_id, courseCode, admin_id, day, start_time, end_time, session_type FROM timetable";
 
     public List<Timetable> findByFilters(String department, String day, String keyword) throws SQLException {
         StringBuilder sql = new StringBuilder(BASE_SELECT + " WHERE 1=1");
@@ -58,7 +58,7 @@ public class TimetableRepository {
     }
 
     public List<String> findAllDepartments() throws SQLException {
-        String sql = "SELECT DISTINCT department FROM timeTable ORDER BY department";
+        String sql = "SELECT DISTINCT department FROM timetable ORDER BY department";
         Connection connection = DBConnection.getInstance().getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql);
@@ -76,7 +76,7 @@ public class TimetableRepository {
     }
 
     public List<String> findAllDays() throws SQLException {
-        String sql = "SELECT DISTINCT day FROM timeTable ORDER BY day";
+        String sql = "SELECT DISTINCT day FROM timetable ORDER BY day";
         Connection connection = DBConnection.getInstance().getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql);
@@ -94,7 +94,7 @@ public class TimetableRepository {
     }
 
     public boolean save(Timetable timetable) throws SQLException {
-        String sql = "INSERT INTO timeTable (time_table_id, department, lec_id, courseCode, admin_id, day, start_time, end_time, session_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO timetable (time_table_id, department, lec_id, courseCode, admin_id, day, start_time, end_time, session_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Connection connection = DBConnection.getInstance().getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -104,7 +104,7 @@ public class TimetableRepository {
     }
 
     public boolean update(Timetable timetable) throws SQLException {
-        String sql = "UPDATE timeTable SET department = ?, lec_id = ?, courseCode = ?, admin_id = ?, day = ?, start_time = ?, end_time = ?, session_type = ? WHERE time_table_id = ?";
+        String sql = "UPDATE timetable SET department = ?, lec_id = ?, courseCode = ?, admin_id = ?, day = ?, start_time = ?, end_time = ?, session_type = ? WHERE time_table_id = ?";
         Connection connection = DBConnection.getInstance().getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -114,7 +114,7 @@ public class TimetableRepository {
     }
 
     public boolean deleteById(String timetableId) throws SQLException {
-        String sql = "DELETE FROM timeTable WHERE time_table_id = ?";
+        String sql = "DELETE FROM timetable WHERE time_table_id = ?";
         Connection connection = DBConnection.getInstance().getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

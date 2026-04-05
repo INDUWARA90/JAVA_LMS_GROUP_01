@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.TechnicalOfficer.TechnicalOfficerDashboardController">
+    <left>
+        <VBox prefWidth="280.0" style="-fx-background-color: #0f3d3e;" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="TECHNICAL OFFICER" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="22.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets left="20.0" top="24.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="lblRegistrationNo" text="Registration No: TO001" textFill="#d1fae5">
+                    <VBox.margin>
+                        <Insets left="20.0" top="8.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="lblOfficerName" text="Name: John Silva" textFill="#d1fae5">
+                    <VBox.margin>
+                        <Insets left="20.0" top="4.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="lblOfficerEmail" text="Email: john.silva@lms.edu" textFill="#d1fae5">
+                    <VBox.margin>
+                        <Insets left="20.0" top="4.0" bottom="18.0" />
+                    </VBox.margin>
+                </Label>
+                <Separator opacity="0.25" prefWidth="220.0">
+                    <VBox.margin>
+                        <Insets left="20.0" right="20.0" bottom="15.0" />
+                    </VBox.margin>
+                </Separator>
+                <Button mnemonicParsing="false" onAction="#navDashboard" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Dashboard" />
+                <Button mnemonicParsing="false" onAction="#navAttendance" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Attendance Details" />
+                <Button mnemonicParsing="false" onAction="#navMedical" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Medical Details" />
+                <Button mnemonicParsing="false" onAction="#navNotices" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Notices" />
+                <Button mnemonicParsing="false" onAction="#navTimetables" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Timetables" />
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <AnchorPane fx:id="contentArea" style="-fx-background-color: #f5f7fb;" BorderPane.alignment="CENTER">
+            <children>
+                <Label layoutX="26.0" layoutY="22.0" text="Technical Officer Dashboard" textFill="#0f172a">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <HBox layoutX="26.0" layoutY="76.0" spacing="18.0">
+                    <children>
+                        <VBox prefHeight="130.0" prefWidth="230.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 16;">
+                            <children>
+                                <Label text="Attendance Records" textFill="#4b5563" />
+                                <Label fx:id="lblAttendanceCount" text="1265" textFill="#0f172a">
+                                    <font>
+                                        <Font name="System Bold" size="28.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="130.0" prefWidth="230.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 16;">
+                            <children>
+                                <Label text="Medical Records" textFill="#4b5563" />
+                                <Label fx:id="lblMedicalCount" text="214" textFill="#0f172a">
+                                    <font>
+                                        <Font name="System Bold" size="28.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="130.0" prefWidth="230.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 16;">
+                            <children>
+                                <Label text="Unread Notices" textFill="#4b5563" />
+                                <Label fx:id="lblUnreadNoticeCount" text="7" textFill="#0f172a">
+                                    <font>
+                                        <Font name="System Bold" size="28.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <VBox layoutX="26.0" layoutY="238.0" prefHeight="420.0" prefWidth="752.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
+                    <children>
+                        <Label text="Officer Details" textFill="#111827">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="lblUserId" text="User ID: TO001" textFill="#374151" />
+                        <Label fx:id="lblDepartment" text="Department: Computing" textFill="#374151" />
+                        <Label fx:id="lblPhone" text="Phone: +94 77 123 4567" textFill="#374151" />
+                        <Label fx:id="lblAddress" text="Address: 24, Galle Road, Colombo" textFill="#374151" />
+                        <Label text="Role Permissions:" textFill="#111827">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                        <Label text="- Update own profile (except username and password)" textFill="#374151" />
+                        <Label text="- Add and maintain student attendance records" textFill="#374151" />
+                        <Label text="- Add and maintain undergraduate medical records" textFill="#374151" />
+                        <Label text="- View notices and department timetables" textFill="#374151" />
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </center>
+</BorderPane>

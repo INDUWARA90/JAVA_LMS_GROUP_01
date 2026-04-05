@@ -1,11 +1,11 @@
 package com.example.java_lms_group_01.Controller;
 
-<<<<<<< HEAD
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-=======
+import com.example.java_lms_group_01.Controller.LandingPages.RoleLandingController;
+import com.example.java_lms_group_01.Controller.Student.StudentDashboardController;
+import com.example.java_lms_group_01.Controller.TechnicalOfficer.TechnicalOfficerDashboardController;
 import com.example.java_lms_group_01.model.users.UserRole;
+import com.example.java_lms_group_01.util.DBConnection;
+import com.example.java_lms_group_01.util.PasswordUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,14 +15,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import com.example.java_lms_group_01.util.DBConnection;
-import com.example.java_lms_group_01.util.PasswordUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
->>>>>>> 2115b92ecbf8c6e0b1f174d9f4a8815be2906825
 
 public class LoginController {
 
@@ -33,25 +30,6 @@ public class LoginController {
     private PasswordField loginPass;
 
     @FXML
-<<<<<<< HEAD
-    public void initialize() {
-        System.out.println("Login Loaded");
-    }
-
-    @FXML
-    private void btnOnActionLogin() {
-
-        String username = loginEmail.getText();
-        String password = loginPass.getText();
-
-        if (username.equals("admin") && password.equals("1234")) {
-            System.out.println("Login Success");
-        } else {
-            System.out.println("Invalid Login");
-        }
-    }
-}
-=======
     void btnOnActionLogin(ActionEvent event) {
         String registrationNo = loginEmail.getText() == null ? "" : loginEmail.getText().trim();
         String password = loginPass.getText() == null ? "" : loginPass.getText().trim();
@@ -127,11 +105,11 @@ public class LoginController {
             }
             case STUDENT -> {
                 fxmlPath = "/view/Landing/student_landing.fxml";
-                title = "Student Landing";
+                title = "Student Dashboard";
             }
             case TECHNICAL_OFFICER -> {
-                fxmlPath = "/view/Landing/technical_officer_landing.fxml";
-                title = "Technical Officer Landing";
+                fxmlPath = "/view/technicalofficer/technical_officer_dashboard.fxml";
+                title = "Technical Officer Dashboard";
             }
             default -> throw new IllegalArgumentException("Unknown role: " + role);
         }
@@ -139,8 +117,14 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Parent root = loader.load();
 
-        if (role != UserRole.ADMIN) {
-            com.example.java_lms_group_01.Controller.LandingPages.RoleLandingController controller = loader.getController();
+        if (role == UserRole.STUDENT) {
+            StudentDashboardController controller = loader.getController();
+            controller.setStudentData(registrationNo);
+        } else if (role == UserRole.TECHNICAL_OFFICER) {
+            TechnicalOfficerDashboardController controller = loader.getController();
+            controller.setTechnicalOfficerData(registrationNo);
+        } else if (role != UserRole.ADMIN) {
+            RoleLandingController controller = loader.getController();
             controller.setLandingData(role.value(), registrationNo);
         }
 
@@ -158,4 +142,3 @@ public class LoginController {
         alert.showAndWait();
     }
 }
->>>>>>> 2115b92ecbf8c6e0b1f174d9f4a8815be2906825

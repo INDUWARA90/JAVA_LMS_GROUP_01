@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.java_lms_group_01.Controller.Student.StudentGradePageController"
+      style="-fx-padding: 18; -fx-background-color: white;">
+    <Label text="Grades (marks table) + GPA (student table)" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <TableView fx:id="tblGrades" prefHeight="420">
+        <columns>
+            <TableColumn fx:id="colSubject" text="courseCode" prefWidth="130"/>
+            <TableColumn text="quiz_1" prefWidth="90"/>
+            <TableColumn text="quiz_2" prefWidth="90"/>
+            <TableColumn text="quiz_3" prefWidth="90"/>
+            <TableColumn text="assessment_1" prefWidth="110"/>
+            <TableColumn text="assessment_2" prefWidth="110"/>
+            <TableColumn text="mid_term" prefWidth="100"/>
+            <TableColumn text="final_theory" prefWidth="110"/>
+            <TableColumn text="final_practical" prefWidth="120"/>
+            <TableColumn fx:id="colMarks" text="Total" prefWidth="90"/>
+            <TableColumn fx:id="colGrade" text="Grade" prefWidth="90"/>
+        </columns>
+    </TableView>
+    <Label fx:id="lblGpa" text="GPA : 0.00" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+</VBox>

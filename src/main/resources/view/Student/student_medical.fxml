@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.java_lms_group_01.Controller.Student.StudentMedicalPageController"
+      style="-fx-padding: 18; -fx-background-color: white;">
+    <Label text="Medical (medical table)" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <TableView fx:id="tblMedical" prefHeight="450">
+        <columns>
+            <TableColumn fx:id="colDate" text="medical_id" prefWidth="100"/>
+            <TableColumn fx:id="colSubject" text="StudentReg" prefWidth="130"/>
+            <TableColumn fx:id="colDescription" text="courseCode" prefWidth="140"/>
+            <TableColumn fx:id="colSessionType" text="SubmissionDate" prefWidth="130"/>
+            <TableColumn text="Description" prefWidth="260"/>
+            <TableColumn text="session_type" prefWidth="120"/>
+            <TableColumn text="attendance_id" prefWidth="120"/>
+            <TableColumn text="tech_officer_reg" prefWidth="150"/>
+        </columns>
+    </TableView>
+</VBox>

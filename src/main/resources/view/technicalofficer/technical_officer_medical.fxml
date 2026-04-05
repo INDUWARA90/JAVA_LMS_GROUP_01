@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="12.0" style="-fx-padding: 18; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.TechnicalOfficer.TechnicalOfficerMedicalController">
+    <Label text="Maintain Medical Details">
+        <font>
+            <Font name="System Bold" size="22.0" />
+        </font>
+    </Label>
+
+    <HBox spacing="10.0">
+        <children>
+            <TextField fx:id="txtStudentRegNo" promptText="Student Registration No" />
+            <TextField fx:id="txtCourseCode" promptText="Course Code" />
+            <TextField fx:id="txtAttendanceId" promptText="Attendance ID" />
+            <DatePicker fx:id="dpSubmissionDate" promptText="Submission Date" />
+            <ComboBox fx:id="cmbSessionType" promptText="Session Type" prefWidth="140.0" />
+        </children>
+    </HBox>
+
+    <TextArea fx:id="txtDescription" prefHeight="90.0" promptText="Medical description / reason" wrapText="true" />
+
+    <HBox spacing="10.0">
+        <children>
+            <Button mnemonicParsing="false" onAction="#addRecord" text="Add Record" />
+            <Button mnemonicParsing="false" onAction="#updateRecord" text="Update Record" />
+            <Button mnemonicParsing="false" onAction="#deleteRecord" text="Delete Record" />
+            <Button mnemonicParsing="false" onAction="#clearForm" text="Clear" />
+        </children>
+        <padding>
+            <Insets top="4.0" bottom="4.0" />
+        </padding>
+    </HBox>
+
+    <TableView fx:id="tblMedical" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colMedicalId" prefWidth="90.0" text="Medical ID" />
+            <TableColumn fx:id="colStudentRegNo" prefWidth="150.0" text="Student Reg No" />
+            <TableColumn fx:id="colCourseCode" prefWidth="120.0" text="Course Code" />
+            <TableColumn fx:id="colDate" prefWidth="130.0" text="Date" />
+            <TableColumn fx:id="colDescription" prefWidth="250.0" text="Description" />
+            <TableColumn fx:id="colSessionType" prefWidth="130.0" text="Session Type" />
+            <TableColumn fx:id="colAttendanceId" prefWidth="120.0" text="Attendance ID" />
+            <TableColumn fx:id="colTechOfficerReg" prefWidth="140.0" text="Tech Officer Reg" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="10.0">
+        <children>
+            <TextField fx:id="txtSearch" promptText="Search by student/course" />
+            <Button mnemonicParsing="false" onAction="#searchRecords" text="Search" />
+            <Button mnemonicParsing="false" onAction="#refreshRecords" text="Refresh" />
+        </children>
+    </HBox>
+</VBox>

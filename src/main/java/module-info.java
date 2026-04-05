@@ -10,6 +10,7 @@ module com.example.java_lms_group_01 {
     opens com.example.java_lms_group_01.Controller.AdminDashboard to javafx.fxml;
     opens com.example.java_lms_group_01.Controller.LandingPages to javafx.fxml;
     opens com.example.java_lms_group_01.Controller.Student to javafx.fxml;
+    opens com.example.java_lms_group_01.Controller.TechnicalOfficer to javafx.fxml;
 
     exports com.example.java_lms_group_01;
 }

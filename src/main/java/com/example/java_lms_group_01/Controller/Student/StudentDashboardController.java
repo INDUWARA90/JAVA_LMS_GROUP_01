@@ -1,0 +1,84 @@
+package com.example.java_lms_group_01.Controller.Student;
+
+import com.example.java_lms_group_01.util.StudentContext;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+
+import java.io.IOException;
+
+public class StudentDashboardController {
+
+    @FXML
+    private Label lblRegistrationNo;
+
+    @FXML
+    private AnchorPane contentArea;
+
+    public void setStudentData(String registrationNo) {
+        lblRegistrationNo.setText("Registration No: " + registrationNo);
+        StudentContext.setRegistrationNo(registrationNo);
+        loadContent("/view/Student/student_profile.fxml");
+    }
+
+    @FXML
+    private void navProfile(ActionEvent event) {
+        loadContent("/view/Student/student_profile.fxml");
+    }
+
+    @FXML
+    private void navAttendance(ActionEvent event) {
+        loadContent("/view/Student/student_attendance.fxml");
+    }
+
+    @FXML
+    private void navMedical(ActionEvent event) {
+        loadContent("/view/Student/student_medical.fxml");
+    }
+
+    @FXML
+    private void navCourses(ActionEvent event) {
+        loadContent("/view/Student/student_courses.fxml");
+    }
+
+    @FXML
+    private void navGrades(ActionEvent event) {
+        loadContent("/view/Student/student_grades.fxml");
+    }
+
+    @FXML
+    private void navTimetable(ActionEvent event) {
+        loadContent("/view/Student/student_timetable.fxml");
+    }
+
+    @FXML
+    private void navNotices(ActionEvent event) {
+        loadContent("/view/Student/student_notices.fxml");
+    }
+
+    @FXML
+    private void logout(ActionEvent event) {
+        StudentContext.clear();
+        System.out.println("Logout clicked");
+    }
+
+    private void loadContent(String fxmlPath) {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+            contentArea.getChildren().setAll(view);
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Cannot open: " + fxmlPath);
+            alert.showAndWait();
+        }
+    }
+}
