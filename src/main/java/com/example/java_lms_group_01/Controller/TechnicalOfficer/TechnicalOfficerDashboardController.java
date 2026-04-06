@@ -6,9 +6,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -90,6 +92,11 @@ public class TechnicalOfficerDashboardController {
     }
 
     @FXML
+    private void navProfile(ActionEvent event) {
+        loadContent("/view/technicalofficer/technical_officer_profile.fxml");
+    }
+
+    @FXML
     private void navMedical(ActionEvent event) {
         loadContent("/view/technicalofficer/technical_officer_medical.fxml");
     }
@@ -102,6 +109,24 @@ public class TechnicalOfficerDashboardController {
     @FXML
     private void navTimetables(ActionEvent event) {
         loadContent("/view/technicalofficer/technical_officer_timetable.fxml");
+    }
+
+    @FXML
+    private void logout(ActionEvent event) {
+        TechnicalOfficerContext.clear();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login_page.fxml"));
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("LMS Login");
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Navigation Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Cannot open login page.");
+            alert.showAndWait();
+        }
     }
 
     private void loadContent(String fxmlPath) {

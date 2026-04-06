@@ -5,16 +5,16 @@
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.java_lms_group_01.Controller.Student.StudentAttendancePageController"
       style="-fx-padding: 18; -fx-background-color: white;">
-    <Label text="Attendance (attendance table)" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Label text="Attendance Details" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
     <TableView fx:id="tblAttendance" prefHeight="450">
         <columns>
-            <TableColumn fx:id="colSubject" text="attendance_id" prefWidth="120"/>
-            <TableColumn fx:id="colTheory" text="StudentReg" prefWidth="140"/>
-            <TableColumn fx:id="colPractical" text="courseCode" prefWidth="150"/>
-            <TableColumn fx:id="colTotal" text="SubmissionDate" prefWidth="150"/>
-            <TableColumn text="session_type" prefWidth="140"/>
-            <TableColumn text="attendance_status" prefWidth="150"/>
-            <TableColumn text="tech_officer_reg" prefWidth="150"/>
+            <TableColumn fx:id="colAttendanceId" text="attendance_id" prefWidth="100"/>
+            <TableColumn fx:id="colStudentReg" text="StudentReg" prefWidth="130"/>
+            <TableColumn fx:id="colCourseCode" text="courseCode" prefWidth="140"/>
+            <TableColumn fx:id="colSubmissionDate" text="SubmissionDate" prefWidth="130"/>
+            <TableColumn fx:id="colSessionType" text="session_type" prefWidth="120"/>
+            <TableColumn fx:id="colAttendanceStatus" text="attendance_status" prefWidth="130"/>
+            <TableColumn fx:id="colTechOfficerReg" text="tech_officer_reg" prefWidth="140"/>
         </columns>
     </TableView>
 </VBox>

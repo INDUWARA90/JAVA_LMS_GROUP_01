@@ -1,19 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"fx:controller="com.example.java_lms_group_01.Controller.Lecturer.LecturerStudentsController">
+<VBox spacing="12.0" style="-fx-padding: 18; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.Lecturer.LecturerStudentsController">
+    <Label text="Undergraduate Details">
+        <font>
+            <Font name="System Bold" size="22.0" />
+        </font>
+    </Label>
 
-    <Label text="Undergraduate Details" style="-fx-font-size:18px;"/>
+    <HBox spacing="10.0">
+        <children>
+            <TextField fx:id="txtSearch" promptText="Search student/dept" />
+            <Button text="Search" onAction="#searchStudents" />
+            <Button text="Refresh" onAction="#refreshStudents" />
+        </children>
+    </HBox>
 
-    <TableView fx:id="studentTable">
+    <TableView fx:id="tblStudents" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn text="Student ID"/>
-            <TableColumn text="Name"/>
-            <TableColumn text="Department"/>
-            <TableColumn text="Year"/>
+            <TableColumn fx:id="colRegNo" text="Reg No" prefWidth="110.0" />
+            <TableColumn fx:id="colName" text="Name" prefWidth="170.0" />
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="190.0" />
+            <TableColumn fx:id="colPhone" text="Phone" prefWidth="120.0" />
+            <TableColumn fx:id="colDepartment" text="Department" prefWidth="130.0" />
+            <TableColumn fx:id="colStatus" text="Status" prefWidth="90.0" />
+            <TableColumn fx:id="colGpa" text="GPA" prefWidth="80.0" />
         </columns>
     </TableView>
-
-</VBox>[
+</VBox>

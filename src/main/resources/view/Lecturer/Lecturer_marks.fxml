@@ -1,25 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"fx:controller="com.example.java_lms_group_01.Controller.Lecturer.LecturerMarksController">
+<VBox spacing="12.0" style="-fx-padding: 18; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.Lecturer.LecturerMarksController">
+    <Label text="Upload Exam Marks">
+        <font>
+            <Font name="System Bold" size="22.0" />
+        </font>
+    </Label>
 
-    <Label text="Upload Exam Marks" style="-fx-font-size:18px;"/>
+    <GridPane hgap="10.0" vgap="8.0">
+        <children>
+            <Label text="Student Reg No" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+            <TextField fx:id="txtStudentReg" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+            <Label text="Course Code" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+            <TextField fx:id="txtCourseCode" GridPane.rowIndex="0" GridPane.columnIndex="3" />
 
-    <HBox spacing="10">
-        <TextField fx:id="txtStudentID" promptText="Student ID"/>
-        <TextField fx:id="txtCourseID" promptText="Course ID"/>
-        <TextField fx:id="txtMarks" promptText="Marks"/>
-        <Button text="Upload"/>
+            <Label text="Quiz 1" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+            <TextField fx:id="txtQuiz1" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+            <Label text="Quiz 2" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+            <TextField fx:id="txtQuiz2" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+            <Label text="Quiz 3" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+            <TextField fx:id="txtQuiz3" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+            <Label text="Assessment 1" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+            <TextField fx:id="txtAssessment1" GridPane.rowIndex="2" GridPane.columnIndex="3" />
+
+            <Label text="Assessment 2" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+            <TextField fx:id="txtAssessment2" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+            <Label text="Mid Term" GridPane.rowIndex="3" GridPane.columnIndex="2" />
+            <TextField fx:id="txtMidTerm" GridPane.rowIndex="3" GridPane.columnIndex="3" />
+
+            <Label text="Final Theory" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+            <TextField fx:id="txtFinalTheory" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+            <Label text="Final Practical" GridPane.rowIndex="4" GridPane.columnIndex="2" />
+            <TextField fx:id="txtFinalPractical" GridPane.rowIndex="4" GridPane.columnIndex="3" />
+        </children>
+    </GridPane>
+
+    <HBox spacing="10.0">
+        <children>
+            <Button text="Add" onAction="#addMarks" />
+            <Button text="Update" onAction="#updateMarks" />
+            <Button text="Delete" onAction="#deleteMarks" />
+            <Button text="Clear" onAction="#clearForm" />
+            <TextField fx:id="txtSearch" promptText="Search by student/course" />
+            <Button text="Search" onAction="#searchMarks" />
+            <Button text="Refresh" onAction="#refreshMarks" />
+        </children>
     </HBox>
 
-    <TableView fx:id="marksTable">
+    <TableView fx:id="tblMarks" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn text="Student ID"/>
-            <TableColumn text="Course"/>
-            <TableColumn text="Marks"/>
+            <TableColumn fx:id="colMarkId" text="ID" prefWidth="60.0" />
+            <TableColumn fx:id="colStudentReg" text="Student" prefWidth="100.0" />
+            <TableColumn fx:id="colCourseCode" text="Course" prefWidth="110.0" />
+            <TableColumn fx:id="colQuiz1" text="Q1" prefWidth="60.0" />
+            <TableColumn fx:id="colQuiz2" text="Q2" prefWidth="60.0" />
+            <TableColumn fx:id="colQuiz3" text="Q3" prefWidth="60.0" />
+            <TableColumn fx:id="colA1" text="A1" prefWidth="60.0" />
+            <TableColumn fx:id="colA2" text="A2" prefWidth="60.0" />
+            <TableColumn fx:id="colMid" text="Mid" prefWidth="70.0" />
+            <TableColumn fx:id="colFinalTheory" text="Final T" prefWidth="80.0" />
+            <TableColumn fx:id="colFinalPractical" text="Final P" prefWidth="80.0" />
         </columns>
     </TableView>
-
 </VBox>

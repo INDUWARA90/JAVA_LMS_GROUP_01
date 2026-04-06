@@ -43,10 +43,17 @@
                     </VBox.margin>
                 </Separator>
                 <Button mnemonicParsing="false" onAction="#navDashboard" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Dashboard" />
+                <Button mnemonicParsing="false" onAction="#navProfile" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  My Profile" />
                 <Button mnemonicParsing="false" onAction="#navAttendance" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Attendance Details" />
                 <Button mnemonicParsing="false" onAction="#navMedical" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Medical Details" />
                 <Button mnemonicParsing="false" onAction="#navNotices" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Notices" />
                 <Button mnemonicParsing="false" onAction="#navTimetables" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;" text="  Timetables" />
+                <Separator opacity="0.25" prefWidth="220.0">
+                    <VBox.margin>
+                        <Insets left="20.0" right="20.0" top="12.0" bottom="10.0" />
+                    </VBox.margin>
+                </Separator>
+                <Button mnemonicParsing="false" onAction="#logout" prefHeight="42.0" prefWidth="280.0" style="-fx-background-color: transparent; -fx-text-fill: #fecaca; -fx-alignment: CENTER_LEFT;" text="  Logout" />
             </children>
         </VBox>
     </left>

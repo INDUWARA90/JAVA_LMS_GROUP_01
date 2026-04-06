@@ -7,13 +7,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="12.0" style="-fx-padding: 18; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.Lecturer.LecturerProfileController">
-    <Label text="Update Lecturer Profile">
+<VBox spacing="12.0" style="-fx-padding: 18; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.TechnicalOfficer.TechnicalOfficerProfileController">
+    <Label text="My Profile">
         <font>
             <Font name="System Bold" size="22.0" />
         </font>
     </Label>
-    <Label text="Username (registration number) and password are not editable here." style="-fx-text-fill: #4b5563;" />
+
+    <Label text="Username and password are managed by admin and cannot be changed here." style="-fx-text-fill: #475569;" />
 
     <GridPane hgap="10.0" vgap="10.0">
         <children>
@@ -34,12 +35,6 @@
 
             <Label text="Address" GridPane.rowIndex="5" GridPane.columnIndex="0" />
             <TextField fx:id="txtAddress" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-
-            <Label text="Department" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-            <TextField fx:id="txtDepartment" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-
-            <Label text="Position" GridPane.rowIndex="7" GridPane.columnIndex="0" />
-            <TextField fx:id="txtPosition" GridPane.rowIndex="7" GridPane.columnIndex="1" />
         </children>
     </GridPane>
 

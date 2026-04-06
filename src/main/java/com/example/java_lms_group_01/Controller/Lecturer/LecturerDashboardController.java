@@ -1,76 +1,120 @@
 package com.example.java_lms_group_01.Controller.Lecturer;
 
+import com.example.java_lms_group_01.util.LecturerContext;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LecturerDashboardController {
 
     @FXML
-    private Button btnProfile;
-
+    private Label lblRegistrationNo;
     @FXML
-    private Button btnMaterials;
-
+    private Label lblRole;
     @FXML
-    private Button btnMarks;
+    private AnchorPane contentArea;
 
-    @FXML
-    private Button btnStudents;
-
-    @FXML
-    private Button btnEligibility;
-
-    @FXML
-    private Button btnGPA;
-
-    @FXML
-    private Button btnAttendance;
-
-    @FXML
-    private Button btnNotices;
-
-    @FXML
-    private Button btnLogout;
+    private final List<javafx.scene.Node> dashboardHomeNodes = new ArrayList<>();
 
     @FXML
     public void initialize() {
-
-        btnProfile.setOnAction(e -> openProfile());
-        btnMaterials.setOnAction(e -> openMaterials());
-        btnMarks.setOnAction(e -> openMarks());
-        btnStudents.setOnAction(e -> openStudents());
-        btnAttendance.setOnAction(e -> openAttendance());
-        btnNotices.setOnAction(e -> openNotices());
-        btnLogout.setOnAction(e -> logout());
-
+        lblRegistrationNo.setText("Registration No: -");
+        lblRole.setText("LECTURER");
+        dashboardHomeNodes.addAll(contentArea.getChildren());
     }
 
-    private void openProfile() {
-        System.out.println("Open Lecturer Profile Page");
+    public void setLecturerData(String registrationNo) {
+        LecturerContext.setRegistrationNo(registrationNo);
+        lblRegistrationNo.setText("Registration No: " + registrationNo);
     }
 
-    private void openMaterials() {
-        System.out.println("Open Course Materials Page");
+    @FXML
+    private void navDashboard(ActionEvent event) {
+        contentArea.getChildren().setAll(dashboardHomeNodes);
     }
 
-    private void openMarks() {
-        System.out.println("Open Upload Marks Page");
+    @FXML
+    private void navProfile(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_profile.fxml");
     }
 
-    private void openStudents() {
-        System.out.println("Open Student Details Page");
+    @FXML
+    private void navMaterials(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_materials.fxml");
     }
 
-    private void openAttendance() {
-        System.out.println("Open Attendance Page");
+    @FXML
+    private void navMarks(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_marks.fxml");
     }
 
-    private void openNotices() {
-        System.out.println("Open Notices Page");
+    @FXML
+    private void navStudents(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_students.fxml");
     }
 
-    private void logout() {
-        System.out.println("Logout");
+    @FXML
+    private void navEligibility(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_eligibility.fxml");
     }
 
+    @FXML
+    private void navGpa(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_gpa.fxml");
+    }
+
+    @FXML
+    private void navAttendance(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_attendance.fxml");
+    }
+
+    @FXML
+    private void navNotices(ActionEvent event) {
+        loadContent("/view/Lecturer/Lecturer_notices.fxml");
+    }
+
+    @FXML
+    private void logout(ActionEvent event) {
+        LecturerContext.clear();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login_page.fxml"));
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("LMS Login");
+            stage.show();
+        } catch (IOException e) {
+            showError("Cannot open login page.", e);
+        }
+    }
+
+    private void loadContent(String fxmlPath) {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+            contentArea.getChildren().setAll(view);
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
+        } catch (IOException e) {
+            showError("Cannot open: " + fxmlPath, e);
+        }
+    }
+
+    private void showError(String message, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Navigation Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message + "\n" + e.getMessage());
+        alert.showAndWait();
+    }
 }

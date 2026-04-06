@@ -5,36 +5,37 @@
 <VBox spacing="12" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.java_lms_group_01.Controller.Student.StudentProfilePageController"
       style="-fx-padding: 18; -fx-background-color: white;">
-    <Label text="Student Profile (users + student tables)" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Label text="Student Profile" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Label text="Only email, phone, address, and profile picture path can be updated." style="-fx-text-fill: #4b5563;" />
 
     <GridPane hgap="12" vgap="10">
-        <Label text="student.registrationNo / users.user_id:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label text="Registration No:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="txtRegistrationNo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <Label text="users.firstName + users.lastName:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label text="Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="txtName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-        <Label text="users.email (editable):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label text="Email (editable):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <TextField fx:id="txtEmail" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-        <Label text="users.phoneNumber (editable):" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label text="Phone (editable):" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <TextField fx:id="txtPhone" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-        <Label text="users.address (editable):" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Label text="Address (editable):" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <TextField fx:id="txtAddress" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-        <Label text="student.department (read only):" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <Label text="Department:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
         <TextField fx:id="txtDepartment" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
-        <Label text="student.GPA (read only):" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <Label text="GPA:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
         <TextField fx:id="txtGpa" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
-        <Label text="student.status (read only):" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <Label text="Status:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
         <TextField fx:id="txtStatus" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 
-        <Label text="Profile Picture Path (UI only):" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+        <Label text="Profile Picture Path:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
         <TextField fx:id="txtPicturePath" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
     </GridPane>
 
-    <Button text="Save Contact Details" onAction="#saveProfile" />
+    <Button text="Save" onAction="#saveProfile" prefWidth="120" />
 </VBox>

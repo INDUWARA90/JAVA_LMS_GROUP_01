@@ -5,10 +5,10 @@
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.java_lms_group_01.Controller.Student.StudentNoticePageController"
       style="-fx-padding: 18; -fx-background-color: white;">
-    <Label text="Notices (notice table)" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Label text="Notices" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
     <TableView fx:id="tblNotices" prefHeight="450">
         <columns>
-            <TableColumn text="notice_id" prefWidth="90"/>
+            <TableColumn fx:id="colNoticeId" text="notice_id" prefWidth="90"/>
             <TableColumn fx:id="colTitle" text="notice_title" prefWidth="220"/>
             <TableColumn fx:id="colContent" text="notice_content" prefWidth="380"/>
             <TableColumn fx:id="colDate" text="publishDate" prefWidth="140"/>

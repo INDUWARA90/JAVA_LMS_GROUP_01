@@ -5,17 +5,17 @@
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.java_lms_group_01.Controller.Student.StudentTimetablePageController"
       style="-fx-padding: 18; -fx-background-color: white;">
-    <Label text="Timetable (timetable table)" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Label text="Timetable" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
     <TableView fx:id="tblTimetable" prefHeight="450">
         <columns>
-            <TableColumn text="time_table_id" prefWidth="110"/>
-            <TableColumn text="department" prefWidth="110"/>
-            <TableColumn text="lec_id" prefWidth="120"/>
-            <TableColumn fx:id="colCourse" text="courseCode" prefWidth="130"/>
-            <TableColumn text="admin_id" prefWidth="120"/>
+            <TableColumn fx:id="colTimetableId" text="time_table_id" prefWidth="110"/>
+            <TableColumn fx:id="colDepartment" text="department" prefWidth="110"/>
+            <TableColumn fx:id="colLecId" text="lec_id" prefWidth="120"/>
+            <TableColumn fx:id="colCourseCode" text="courseCode" prefWidth="130"/>
+            <TableColumn fx:id="colAdminId" text="admin_id" prefWidth="120"/>
             <TableColumn fx:id="colDay" text="day" prefWidth="110"/>
-            <TableColumn text="start_time" prefWidth="110"/>
-            <TableColumn text="end_time" prefWidth="110"/>
+            <TableColumn fx:id="colStartTime" text="start_time" prefWidth="110"/>
+            <TableColumn fx:id="colEndTime" text="end_time" prefWidth="110"/>
             <TableColumn fx:id="colSession" text="session_type" prefWidth="120"/>
         </columns>
     </TableView>

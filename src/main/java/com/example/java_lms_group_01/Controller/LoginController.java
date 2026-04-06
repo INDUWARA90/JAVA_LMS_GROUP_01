@@ -1,6 +1,7 @@
 package com.example.java_lms_group_01.Controller;
 
 import com.example.java_lms_group_01.Controller.LandingPages.RoleLandingController;
+import com.example.java_lms_group_01.Controller.Lecturer.LecturerDashboardController;
 import com.example.java_lms_group_01.Controller.Student.StudentDashboardController;
 import com.example.java_lms_group_01.Controller.TechnicalOfficer.TechnicalOfficerDashboardController;
 import com.example.java_lms_group_01.model.users.UserRole;
@@ -100,8 +101,8 @@ public class LoginController {
                 title = "Admin Dashboard";
             }
             case LECTURER -> {
-                fxmlPath = "/view/Landing/lecturer_landing.fxml";
-                title = "Lecturer Landing";
+                fxmlPath = "/view/Lecturer/Lecturer_dashboard.fxml";
+                title = "Lecturer Dashboard";
             }
             case STUDENT -> {
                 fxmlPath = "/view/Landing/student_landing.fxml";
@@ -120,6 +121,9 @@ public class LoginController {
         if (role == UserRole.STUDENT) {
             StudentDashboardController controller = loader.getController();
             controller.setStudentData(registrationNo);
+        } else if (role == UserRole.LECTURER) {
+            LecturerDashboardController controller = loader.getController();
+            controller.setLecturerData(registrationNo);
         } else if (role == UserRole.TECHNICAL_OFFICER) {
             TechnicalOfficerDashboardController controller = loader.getController();
             controller.setTechnicalOfficerData(registrationNo);

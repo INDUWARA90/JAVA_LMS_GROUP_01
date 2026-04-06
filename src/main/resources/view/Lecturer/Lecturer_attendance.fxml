@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"fx:controller="com.example.java_lms_group_01.Controller.Lecturer.LecturerAttendanceController">
+<VBox spacing="12.0" style="-fx-padding: 18; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.Lecturer.LecturerAttendanceController">
+    <Label text="Attendance and Medical Records">
+        <font>
+            <Font name="System Bold" size="22.0" />
+        </font>
+    </Label>
 
-    <Label text="Attendance and Medical Records" style="-fx-font-size:18px;"/>
+    <HBox spacing="10.0">
+        <children>
+            <TextField fx:id="txtSearch" promptText="Search by student/course" />
+            <Button text="Search" onAction="#searchRecords" />
+            <Button text="Refresh" onAction="#refreshRecords" />
+        </children>
+    </HBox>
 
-    <TableView fx:id="attendanceTable">
+    <TableView fx:id="tblAttendanceMedical" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn text="Student ID"/>
-            <TableColumn text="Attendance %"/>
-            <TableColumn text="Medical Records"/>
+            <TableColumn fx:id="colAttendanceId" text="Att. ID" prefWidth="70.0" />
+            <TableColumn fx:id="colStudentReg" text="Student" prefWidth="100.0" />
+            <TableColumn fx:id="colCourseCode" text="Course" prefWidth="100.0" />
+            <TableColumn fx:id="colDate" text="Date" prefWidth="90.0" />
+            <TableColumn fx:id="colSessionType" text="Session" prefWidth="90.0" />
+            <TableColumn fx:id="colAttendanceStatus" text="Status" prefWidth="90.0" />
+            <TableColumn fx:id="colMedicalId" text="Medical ID" prefWidth="90.0" />
+            <TableColumn fx:id="colMedicalDescription" text="Medical Description" prefWidth="260.0" />
+            <TableColumn fx:id="colTechOfficerReg" text="Tech Officer" prefWidth="110.0" />
         </columns>
     </TableView>
-
 </VBox>

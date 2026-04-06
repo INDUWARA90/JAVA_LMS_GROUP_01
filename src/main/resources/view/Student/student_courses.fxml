@@ -5,16 +5,17 @@
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.java_lms_group_01.Controller.Student.StudentCoursePageController"
       style="-fx-padding: 18; -fx-background-color: white;">
-    <Label text="Courses (course table)" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Label text="Course Details" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
     <TableView fx:id="tblCourses" prefHeight="450">
         <columns>
-            <TableColumn text="courseCode" prefWidth="140"/>
+            <TableColumn fx:id="colCourseCode" text="courseCode" prefWidth="140"/>
             <TableColumn fx:id="colName" text="name" prefWidth="220"/>
-            <TableColumn fx:id="colLecturer" text="lecturerRegistrationNo" prefWidth="220"/>
-            <TableColumn text="department" prefWidth="140"/>
-            <TableColumn text="semester" prefWidth="130"/>
-            <TableColumn fx:id="colCredit" text="credit" prefWidth="90"/>
-            <TableColumn fx:id="colType" text="course_type" prefWidth="130"/>
+            <TableColumn fx:id="colLecturer" text="lecturerRegistrationNo" prefWidth="180"/>
+            <TableColumn fx:id="colDepartment" text="department" prefWidth="130"/>
+            <TableColumn fx:id="colSemester" text="semester" prefWidth="120"/>
+            <TableColumn fx:id="colCredit" text="credit" prefWidth="80"/>
+            <TableColumn fx:id="colType" text="course_type" prefWidth="120"/>
+            <TableColumn fx:id="colEnrollmentStatus" text="enrollment_status" prefWidth="130"/>
         </columns>
     </TableView>
 </VBox>

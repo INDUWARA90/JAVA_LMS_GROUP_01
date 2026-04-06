@@ -5,9 +5,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -63,7 +65,18 @@ public class StudentDashboardController {
     @FXML
     private void logout(ActionEvent event) {
         StudentContext.clear();
-        System.out.println("Logout clicked");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login_page.fxml"));
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("LMS Login");
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Cannot open login page.");
+            alert.showAndWait();
+        }
     }
 
     private void loadContent(String fxmlPath) {

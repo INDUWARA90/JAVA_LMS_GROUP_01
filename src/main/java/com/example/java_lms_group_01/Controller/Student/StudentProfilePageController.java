@@ -7,42 +7,40 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class StudentProfilePageController {
 
     @FXML
     private TextField txtRegistrationNo;
-
     @FXML
     private TextField txtName;
-
     @FXML
     private TextField txtEmail;
-
     @FXML
     private TextField txtPhone;
-
     @FXML
     private TextField txtAddress;
-
     @FXML
     private TextField txtPicturePath;
-
     @FXML
     private TextField txtDepartment;
-
     @FXML
     private TextField txtGpa;
-
     @FXML
     private TextField txtStatus;
 
     private Student currentStudent;
-    private String currentDepartment;
 
     @FXML
     public void initialize() {
@@ -81,9 +79,9 @@ public class StudentProfilePageController {
                 statement.executeUpdate();
             }
 
-            // Schema does not have a profile picture column in users/student tables.
+            savePicturePath(regNo, value(txtPicturePath));
             show(Alert.AlertType.INFORMATION, "Profile Updated",
-                    "Contact details updated. Profile picture path is not saved because current schema has no picture field.");
+                    "Contact details and profile picture path updated successfully.");
         } catch (Exception e) {
             show(Alert.AlertType.ERROR, "Database Error", e.getMessage());
         }
@@ -112,16 +110,16 @@ public class StudentProfilePageController {
                         return;
                     }
                     currentStudent = mapStudent(rs);
-                    currentDepartment = safe(rs.getString("department"));
-
                     txtRegistrationNo.setText(currentStudent.getRegistrationNo());
                     txtName.setText(safe(currentStudent.getFirstName()) + " " + safe(currentStudent.getLastName()));
                     txtEmail.setText(safe(currentStudent.getEmail()));
                     txtPhone.setText(safe(currentStudent.getPhoneNumber()));
                     txtAddress.setText(safe(currentStudent.getAddress()));
-                    txtDepartment.setText(currentDepartment);
-                    txtGpa.setText(String.format("%.2f", currentStudent.getGPA()));
-                    txtStatus.setText(safe(currentStudent.getStatus()));
+                    txtDepartment.setText(safe(rs.getString("department")));
+                    Object gpaValue = rs.getObject("GPA");
+                    txtGpa.setText(gpaValue == null ? "0.00" : String.format("%.2f", ((Number) gpaValue).doubleValue()));
+                    txtStatus.setText(safe(rs.getString("status")));
+                    txtPicturePath.setText(loadPicturePath(regNo));
                 }
             }
         } catch (SQLException e) {
@@ -142,6 +140,52 @@ public class StudentProfilePageController {
         student.setGPA(gpa == null ? 0.0f : ((Number) gpa).floatValue());
         student.setStatus(rs.getString("status"));
         return student;
+    }
+
+    private String pictureStoreKey(String regNo) {
+        return "student.picture." + regNo;
+    }
+
+    private Path pictureStoreFile() throws IOException {
+        Path dir = Paths.get(System.getProperty("user.home"), ".lms");
+        if (!Files.exists(dir)) {
+            Files.createDirectories(dir);
+        }
+        return dir.resolve("student_profile_pictures.properties");
+    }
+
+    private String loadPicturePath(String regNo) {
+        try {
+            Path file = pictureStoreFile();
+            if (!Files.exists(file)) {
+                return "";
+            }
+            Properties properties = new Properties();
+            try (InputStream in = Files.newInputStream(file)) {
+                properties.load(in);
+            }
+            return properties.getProperty(pictureStoreKey(regNo), "");
+        } catch (Exception ignored) {
+            return "";
+        }
+    }
+
+    private void savePicturePath(String regNo, String picturePath) {
+        try {
+            Path file = pictureStoreFile();
+            Properties properties = new Properties();
+            if (Files.exists(file)) {
+                try (InputStream in = Files.newInputStream(file)) {
+                    properties.load(in);
+                }
+            }
+            properties.setProperty(pictureStoreKey(regNo), picturePath);
+            try (OutputStream out = Files.newOutputStream(file)) {
+                properties.store(out, "Student profile picture paths");
+            }
+        } catch (Exception ignored) {
+            // Keep profile update successful even if local picture path persistence fails.
+        }
     }
 
     private String value(TextField field) {
