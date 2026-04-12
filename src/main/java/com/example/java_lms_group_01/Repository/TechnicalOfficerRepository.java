@@ -10,8 +10,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Database access used by technical officer pages.
+ * This class handles attendance records, medical records, and dashboard counts.
+ */
 public class TechnicalOfficerRepository {
 
+    // Add a new attendance record.
     public void addAttendance(AttendanceMutation mutation) throws SQLException {
         String sql = "INSERT INTO attendance (StudentReg, courseCode, tech_officer_reg, SubmissionDate, session_type, attendance_status) VALUES (?, ?, ?, ?, ?, ?)";
         Connection connection = DBConnection.getInstance().getConnection();
@@ -57,16 +62,7 @@ public class TechnicalOfficerRepository {
             try (ResultSet rs = statement.executeQuery()) {
                 List<AttendanceRecord> rows = new ArrayList<>();
                 while (rs.next()) {
-                    Date submissionDate = rs.getDate("SubmissionDate");
-                    rows.add(new AttendanceRecord(
-                            String.valueOf(rs.getInt("attendance_id")),
-                            safe(rs.getString("StudentReg")),
-                            safe(rs.getString("courseCode")),
-                            submissionDate == null ? "" : submissionDate.toString(),
-                            safe(rs.getString("session_type")),
-                            safe(rs.getString("attendance_status")),
-                            safe(rs.getString("tech_officer_reg"))
-                    ));
+                    rows.add(mapAttendanceRecord(rs));
                 }
                 return rows;
             }
@@ -98,8 +94,8 @@ public class TechnicalOfficerRepository {
             connection.commit();
         } catch (Exception e) {
             connection.rollback();
-            if (e instanceof SQLException sqlException) {
-                throw sqlException;
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
             }
             throw new SQLException(e.getMessage(), e);
         } finally {
@@ -124,18 +120,7 @@ public class TechnicalOfficerRepository {
             try (ResultSet rs = statement.executeQuery()) {
                 List<MedicalRecord> rows = new ArrayList<>();
                 while (rs.next()) {
-                    Date date = rs.getDate("SubmissionDate");
-                    rows.add(new MedicalRecord(
-                            String.valueOf(rs.getInt("medical_id")),
-                            safe(rs.getString("StudentReg")),
-                            safe(rs.getString("courseCode")),
-                            date == null ? "" : date.toString(),
-                            safe(rs.getString("Description")),
-                            safe(rs.getString("session_type")),
-                            String.valueOf(rs.getInt("attendance_id")),
-                            safe(rs.getString("approval_status")),
-                            safe(rs.getString("tech_officer_reg"))
-                    ));
+                    rows.add(mapMedicalRecord(rs));
                 }
                 return rows;
             }
@@ -164,10 +149,10 @@ public class TechnicalOfficerRepository {
                   AND session_type = ?
                 """;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, mutation.attendanceId());
-            statement.setString(2, mutation.studentRegNo());
-            statement.setString(3, mutation.courseCode());
-            statement.setString(4, mutation.sessionType());
+            statement.setInt(1, mutation.getAttendanceId());
+            statement.setString(2, mutation.getStudentRegNo());
+            statement.setString(3, mutation.getCourseCode());
+            statement.setString(4, mutation.getSessionType());
             try (ResultSet rs = statement.executeQuery()) {
                 if (!rs.next()) {
                     throw new SQLException("Attendance record does not match the given student, course, and session type.");
@@ -198,14 +183,14 @@ public class TechnicalOfficerRepository {
             }
             medicalStatement.executeUpdate();
 
-            attendanceStatement.setString(1, mutation.techOfficerReg());
-            attendanceStatement.setInt(2, mutation.attendanceId());
+            attendanceStatement.setString(1, mutation.getTechOfficerReg());
+            attendanceStatement.setInt(2, mutation.getAttendanceId());
             attendanceStatement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
             connection.rollback();
-            if (e instanceof SQLException sqlException) {
-                throw sqlException;
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
             }
             throw new SQLException(e.getMessage(), e);
         } finally {
@@ -214,22 +199,22 @@ public class TechnicalOfficerRepository {
     }
 
     private void bindAttendanceMutation(PreparedStatement statement, AttendanceMutation mutation) throws SQLException {
-        statement.setString(1, mutation.studentRegNo());
-        statement.setString(2, mutation.courseCode());
-        statement.setString(3, mutation.techOfficerReg());
-        statement.setDate(4, Date.valueOf(mutation.submissionDate()));
-        statement.setString(5, mutation.sessionType());
-        statement.setString(6, mutation.status());
+        statement.setString(1, mutation.getStudentRegNo());
+        statement.setString(2, mutation.getCourseCode());
+        statement.setString(3, mutation.getTechOfficerReg());
+        statement.setDate(4, Date.valueOf(mutation.getSubmissionDate()));
+        statement.setString(5, mutation.getSessionType());
+        statement.setString(6, mutation.getStatus());
     }
 
     private void bindMedicalMutation(PreparedStatement statement, MedicalMutation mutation) throws SQLException {
-        statement.setString(1, mutation.studentRegNo());
-        statement.setString(2, mutation.courseCode());
-        statement.setString(3, mutation.techOfficerReg());
-        statement.setDate(4, Date.valueOf(mutation.submissionDate()));
-        statement.setString(5, mutation.description());
-        statement.setString(6, mutation.sessionType());
-        statement.setInt(7, mutation.attendanceId());
+        statement.setString(1, mutation.getStudentRegNo());
+        statement.setString(2, mutation.getCourseCode());
+        statement.setString(3, mutation.getTechOfficerReg());
+        statement.setDate(4, Date.valueOf(mutation.getSubmissionDate()));
+        statement.setString(5, mutation.getDescription());
+        statement.setString(6, mutation.getSessionType());
+        statement.setInt(7, mutation.getAttendanceId());
     }
 
     private int fetchCount(String sql) throws SQLException {
@@ -240,18 +225,156 @@ public class TechnicalOfficerRepository {
         }
     }
 
+    private AttendanceRecord mapAttendanceRecord(ResultSet rs) throws SQLException {
+        Date submissionDate = rs.getDate("SubmissionDate");
+        return new AttendanceRecord(
+                String.valueOf(rs.getInt("attendance_id")),
+                safe(rs.getString("StudentReg")),
+                safe(rs.getString("courseCode")),
+                submissionDate == null ? "" : submissionDate.toString(),
+                safe(rs.getString("session_type")),
+                safe(rs.getString("attendance_status")),
+                safe(rs.getString("tech_officer_reg"))
+        );
+    }
+
+    private MedicalRecord mapMedicalRecord(ResultSet rs) throws SQLException {
+        Date submissionDate = rs.getDate("SubmissionDate");
+        return new MedicalRecord(
+                String.valueOf(rs.getInt("medical_id")),
+                safe(rs.getString("StudentReg")),
+                safe(rs.getString("courseCode")),
+                submissionDate == null ? "" : submissionDate.toString(),
+                safe(rs.getString("Description")),
+                safe(rs.getString("session_type")),
+                String.valueOf(rs.getInt("attendance_id")),
+                safe(rs.getString("approval_status")),
+                safe(rs.getString("tech_officer_reg"))
+        );
+    }
+
     private static String safe(String value) {
         return value == null ? "" : value;
     }
 
-    public record AttendanceMutation(String studentRegNo, String courseCode, String techOfficerReg,
-                                     java.time.LocalDate submissionDate, String sessionType, String status) {}
-    public record AttendanceRecord(String attendanceId, String studentRegNo, String courseCode, String date,
-                                   String sessionType, String status, String techOfficerReg) {}
-    public record MedicalMutation(String studentRegNo, String courseCode, int attendanceId,
-                                  java.time.LocalDate submissionDate, String sessionType,
-                                  String description, String techOfficerReg) {}
-    public record MedicalRecord(String medicalId, String studentRegNo, String courseCode, String date,
-                                String description, String sessionType, String attendanceId,
-                                String approvalStatus, String techOfficerReg) {}
+    public static class AttendanceMutation {
+        private final String studentRegNo;
+        private final String courseCode;
+        private final String techOfficerReg;
+        private final java.time.LocalDate submissionDate;
+        private final String sessionType;
+        private final String status;
+
+        public AttendanceMutation(String studentRegNo, String courseCode, String techOfficerReg,
+                                  java.time.LocalDate submissionDate, String sessionType, String status) {
+            this.studentRegNo = studentRegNo;
+            this.courseCode = courseCode;
+            this.techOfficerReg = techOfficerReg;
+            this.submissionDate = submissionDate;
+            this.sessionType = sessionType;
+            this.status = status;
+        }
+
+        public String getStudentRegNo() { return studentRegNo; }
+        public String getCourseCode() { return courseCode; }
+        public String getTechOfficerReg() { return techOfficerReg; }
+        public java.time.LocalDate getSubmissionDate() { return submissionDate; }
+        public String getSessionType() { return sessionType; }
+        public String getStatus() { return status; }
+    }
+
+    public static class AttendanceRecord {
+        private final String attendanceId;
+        private final String studentRegNo;
+        private final String courseCode;
+        private final String date;
+        private final String sessionType;
+        private final String status;
+        private final String techOfficerReg;
+
+        public AttendanceRecord(String attendanceId, String studentRegNo, String courseCode, String date,
+                                String sessionType, String status, String techOfficerReg) {
+            this.attendanceId = attendanceId;
+            this.studentRegNo = studentRegNo;
+            this.courseCode = courseCode;
+            this.date = date;
+            this.sessionType = sessionType;
+            this.status = status;
+            this.techOfficerReg = techOfficerReg;
+        }
+
+        public String getAttendanceId() { return attendanceId; }
+        public String getStudentRegNo() { return studentRegNo; }
+        public String getCourseCode() { return courseCode; }
+        public String getDate() { return date; }
+        public String getSessionType() { return sessionType; }
+        public String getStatus() { return status; }
+        public String getTechOfficerReg() { return techOfficerReg; }
+    }
+
+    public static class MedicalMutation {
+        private final String studentRegNo;
+        private final String courseCode;
+        private final int attendanceId;
+        private final java.time.LocalDate submissionDate;
+        private final String sessionType;
+        private final String description;
+        private final String techOfficerReg;
+
+        public MedicalMutation(String studentRegNo, String courseCode, int attendanceId,
+                               java.time.LocalDate submissionDate, String sessionType,
+                               String description, String techOfficerReg) {
+            this.studentRegNo = studentRegNo;
+            this.courseCode = courseCode;
+            this.attendanceId = attendanceId;
+            this.submissionDate = submissionDate;
+            this.sessionType = sessionType;
+            this.description = description;
+            this.techOfficerReg = techOfficerReg;
+        }
+
+        public String getStudentRegNo() { return studentRegNo; }
+        public String getCourseCode() { return courseCode; }
+        public int getAttendanceId() { return attendanceId; }
+        public java.time.LocalDate getSubmissionDate() { return submissionDate; }
+        public String getSessionType() { return sessionType; }
+        public String getDescription() { return description; }
+        public String getTechOfficerReg() { return techOfficerReg; }
+    }
+
+    public static class MedicalRecord {
+        private final String medicalId;
+        private final String studentRegNo;
+        private final String courseCode;
+        private final String date;
+        private final String description;
+        private final String sessionType;
+        private final String attendanceId;
+        private final String approvalStatus;
+        private final String techOfficerReg;
+
+        public MedicalRecord(String medicalId, String studentRegNo, String courseCode, String date,
+                             String description, String sessionType, String attendanceId,
+                             String approvalStatus, String techOfficerReg) {
+            this.medicalId = medicalId;
+            this.studentRegNo = studentRegNo;
+            this.courseCode = courseCode;
+            this.date = date;
+            this.description = description;
+            this.sessionType = sessionType;
+            this.attendanceId = attendanceId;
+            this.approvalStatus = approvalStatus;
+            this.techOfficerReg = techOfficerReg;
+        }
+
+        public String getMedicalId() { return medicalId; }
+        public String getStudentRegNo() { return studentRegNo; }
+        public String getCourseCode() { return courseCode; }
+        public String getDate() { return date; }
+        public String getDescription() { return description; }
+        public String getSessionType() { return sessionType; }
+        public String getAttendanceId() { return attendanceId; }
+        public String getApprovalStatus() { return approvalStatus; }
+        public String getTechOfficerReg() { return techOfficerReg; }
+    }
 }

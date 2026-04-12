@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model.users;
 
 import java.time.LocalDate;
 
+/**
+ * Base class that stores common details shared by every system user.
+ */
 public class User {
     private String userId;
     private String firstName;
@@ -10,11 +13,9 @@ public class User {
     private String address;
     private String phoneNumber;
     private LocalDate dateOfBirth;
-    private String gender; // Could also use Enum
-
+    private String gender;
 
     public User() {
-
     }
 
     public String getUserId() {
@@ -92,12 +93,10 @@ public class User {
         this.gender = gender;
     }
 
-
-
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
+                "userId='" + userId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

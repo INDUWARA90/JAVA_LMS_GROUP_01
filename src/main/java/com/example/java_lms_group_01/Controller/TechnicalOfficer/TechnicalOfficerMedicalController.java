@@ -16,7 +16,12 @@ import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Lets a technical officer manage student medical submissions.
+ */
 public class TechnicalOfficerMedicalController {
 
     @FXML
@@ -196,10 +201,22 @@ public class TechnicalOfficerMedicalController {
 
     private void loadMedical(String keyword) {
         try {
-            var rows = technicalOfficerRepository.findMedical(keyword).stream()
-                    .map(r -> new Medical(r.medicalId(), r.studentRegNo(), r.courseCode(), r.date(), r.description(),
-                            r.sessionType(), r.attendanceId(), r.approvalStatus(), r.techOfficerReg()))
-                    .toList();
+            List<TechnicalOfficerRepository.MedicalRecord> recordList =
+                    technicalOfficerRepository.findMedical(keyword);
+            List<Medical> rows = new ArrayList<>();
+            for (TechnicalOfficerRepository.MedicalRecord record : recordList) {
+                rows.add(new Medical(
+                        record.getMedicalId(),
+                        record.getStudentRegNo(),
+                        record.getCourseCode(),
+                        record.getDate(),
+                        record.getDescription(),
+                        record.getSessionType(),
+                        record.getAttendanceId(),
+                        record.getApprovalStatus(),
+                        record.getTechOfficerReg()
+                ));
+            }
             tblMedical.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load medical records.", e);

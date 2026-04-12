@@ -1,4 +1,4 @@
-package com.example.java_lms_group_01.Controller.AdminDashboard;
+package com.example.java_lms_group_01.Controller.Admin;
 
 import com.example.java_lms_group_01.model.users.Admin;
 import com.example.java_lms_group_01.model.Notice;
@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Admin screen for creating, editing, searching, and deleting notices.
+ */
 public class ManageNoticesController implements Initializable {
 
     @FXML
@@ -151,6 +154,7 @@ public class ManageNoticesController implements Initializable {
         }
     }
 
+    // Open a notice dialog and return the notice entered by the admin.
     private Notice showNoticeDialog(Notice existingNotice) {
         boolean editMode = existingNotice != null;
 

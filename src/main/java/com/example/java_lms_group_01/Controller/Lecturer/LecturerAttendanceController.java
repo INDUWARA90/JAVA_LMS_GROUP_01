@@ -11,7 +11,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Shows attendance records together with related medical requests for the lecturer.
+ */
 public class LecturerAttendanceController {
 
     @FXML
@@ -84,11 +89,23 @@ public class LecturerAttendanceController {
 
     private void loadRecords(String keyword) {
         try {
-            var rows = lecturerRepository.findAttendanceMedicalByLecturer(currentLecturer(), keyword).stream()
-                    .map(r -> new AttendanceMedical(r.attendanceId(), r.studentReg(), r.courseCode(), r.date(),
-                            r.sessionType(), r.attendanceStatus(), r.medicalId(), r.medicalDescription(),
-                            r.medicalApprovalStatus(), r.techOfficerReg()))
-                    .toList();
+            List<LecturerRepository.AttendanceMedicalRecord> recordList =
+                    lecturerRepository.findAttendanceMedicalByLecturer(currentLecturer(), keyword);
+            List<AttendanceMedical> rows = new ArrayList<>();
+            for (LecturerRepository.AttendanceMedicalRecord record : recordList) {
+                rows.add(new AttendanceMedical(
+                        record.getAttendanceId(),
+                        record.getStudentReg(),
+                        record.getCourseCode(),
+                        record.getDate(),
+                        record.getSessionType(),
+                        record.getAttendanceStatus(),
+                        record.getMedicalId(),
+                        record.getMedicalDescription(),
+                        record.getMedicalApprovalStatus(),
+                        record.getTechOfficerReg()
+                ));
+            }
             tblAttendanceMedical.getItems().setAll(rows);
             updateActionState(tblAttendanceMedical.getSelectionModel().getSelectedItem());
         } catch (SQLException e) {

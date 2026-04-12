@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row that stores one course grade for the student screen.
+ */
 public class Grade {
     private final SimpleStringProperty courseCode;
     private final SimpleStringProperty courseName;
@@ -19,4 +22,9 @@ public class Grade {
     public SimpleStringProperty courseNameProperty() { return courseName; }
     public SimpleStringProperty totalProperty() { return total; }
     public SimpleStringProperty gradeProperty() { return grade; }
+
+    public String getCourseCode() { return courseCode.get(); }
+    public String getCourseName() { return courseName.get(); }
+    public String getTotal() { return total.get(); }
+    public String getGrade() { return grade.get(); }
 }

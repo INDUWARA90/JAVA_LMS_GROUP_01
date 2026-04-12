@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Admin object that also acts as a simple service layer for admin screens.
+ */
 public class Admin extends User {
     private String registrationNo;
     private String password;
@@ -22,7 +25,6 @@ public class Admin extends User {
     private final NoticeRepository noticeRepository = new NoticeRepository();
 
     public Admin() {
-
     }
 
     public Admin(String userId, String firstName, String lastName, String email, String address, String phoneNumber, LocalDate dateOfBirth, String gender, String registrationNo, String password) {
@@ -64,30 +66,51 @@ public class Admin extends User {
     }
 
     public boolean addUser(UserRole role, UserManagementRow row) throws SQLException {
-        return switch (role) {
-            case ADMIN -> userRepository.createAdmin(row);
-            case LECTURER -> userRepository.createLecturer(row);
-            case STUDENT -> userRepository.createStudent(row);
-            case TECHNICAL_OFFICER -> userRepository.createTechnicalOfficer(row);
-        };
+        if (role == UserRole.ADMIN) {
+            return userRepository.createAdmin(row);
+        }
+        if (role == UserRole.LECTURER) {
+            return userRepository.createLecturer(row);
+        }
+        if (role == UserRole.STUDENT) {
+            return userRepository.createStudent(row);
+        }
+        if (role == UserRole.TECHNICAL_OFFICER) {
+            return userRepository.createTechnicalOfficer(row);
+        }
+        throw new IllegalArgumentException("Unknown role: " + role);
     }
 
     public boolean updateUser(UserRole role, UserManagementRow row) throws SQLException {
-        return switch (role) {
-            case ADMIN -> userRepository.updateAdmin(row);
-            case LECTURER -> userRepository.updateLecturer(row);
-            case STUDENT -> userRepository.updateStudent(row);
-            case TECHNICAL_OFFICER -> userRepository.updateTechnicalOfficer(row);
-        };
+        if (role == UserRole.ADMIN) {
+            return userRepository.updateAdmin(row);
+        }
+        if (role == UserRole.LECTURER) {
+            return userRepository.updateLecturer(row);
+        }
+        if (role == UserRole.STUDENT) {
+            return userRepository.updateStudent(row);
+        }
+        if (role == UserRole.TECHNICAL_OFFICER) {
+            return userRepository.updateTechnicalOfficer(row);
+        }
+        throw new IllegalArgumentException("Unknown role: " + role);
     }
 
     public boolean deleteUser(UserRole role, String userId) throws SQLException {
-        return switch (role) {
-            case ADMIN -> userRepository.deleteAdmin(userId);
-            case LECTURER -> userRepository.deleteLecturer(userId);
-            case STUDENT -> userRepository.deleteStudent(userId);
-            case TECHNICAL_OFFICER -> userRepository.deleteTechnicalOfficer(userId);
-        };
+        if (role == UserRole.ADMIN) {
+            return userRepository.deleteAdmin(userId);
+        }
+        if (role == UserRole.LECTURER) {
+            return userRepository.deleteLecturer(userId);
+        }
+        if (role == UserRole.STUDENT) {
+            return userRepository.deleteStudent(userId);
+        }
+        if (role == UserRole.TECHNICAL_OFFICER) {
+            return userRepository.deleteTechnicalOfficer(userId);
+        }
+        throw new IllegalArgumentException("Unknown role: " + role);
     }
 
     public List<Course> getCourses(String department, String keyword) throws SQLException {
@@ -157,7 +180,6 @@ public class Admin extends User {
     public String toString() {
         return "Admin{" +
                 "registrationNo='" + registrationNo + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

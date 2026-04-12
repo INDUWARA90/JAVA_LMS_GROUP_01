@@ -4,6 +4,9 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalTime;
 
+/**
+ * Simple timetable model used by admin, lecturer, student, and technical officer screens.
+ */
 public class Timetable {
     private String timeTableId;
     private String department;

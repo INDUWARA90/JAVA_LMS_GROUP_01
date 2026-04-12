@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row used by lecturers to check whether a student can sit the exam.
+ */
 public class Eligibility {
     private final SimpleStringProperty studentReg;
     private final SimpleStringProperty studentName;
@@ -29,4 +32,12 @@ public class Eligibility {
     public SimpleStringProperty totalSessionsProperty() { return totalSessions; }
     public SimpleStringProperty attendancePctProperty() { return attendancePct; }
     public SimpleStringProperty eligibilityProperty() { return eligibility; }
+
+    public String getStudentReg() { return studentReg.get(); }
+    public String getStudentName() { return studentName.get(); }
+    public String getCourseCode() { return courseCode.get(); }
+    public String getEligibleSessions() { return eligibleSessions.get(); }
+    public String getTotalSessions() { return totalSessions.get(); }
+    public String getAttendancePct() { return attendancePct.get(); }
+    public String getEligibility() { return eligibility.get(); }
 }

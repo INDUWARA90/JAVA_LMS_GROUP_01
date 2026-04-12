@@ -15,7 +15,12 @@ import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Lets a technical officer add, update, search, and delete attendance records.
+ */
 public class TechnicalOfficerAttendanceController {
 
     @FXML
@@ -176,10 +181,20 @@ public class TechnicalOfficerAttendanceController {
 
     private void loadAttendance(String keyword) {
         try {
-            var rows = technicalOfficerRepository.findAttendance(keyword).stream()
-                    .map(r -> new Attendance(r.attendanceId(), r.studentRegNo(), r.courseCode(), r.date(),
-                            r.sessionType(), r.status(), r.techOfficerReg()))
-                    .toList();
+            List<TechnicalOfficerRepository.AttendanceRecord> recordList =
+                    technicalOfficerRepository.findAttendance(keyword);
+            List<Attendance> rows = new ArrayList<>();
+            for (TechnicalOfficerRepository.AttendanceRecord record : recordList) {
+                rows.add(new Attendance(
+                        record.getAttendanceId(),
+                        record.getStudentRegNo(),
+                        record.getCourseCode(),
+                        record.getDate(),
+                        record.getSessionType(),
+                        record.getStatus(),
+                        record.getTechOfficerReg()
+                ));
+            }
             tblAttendance.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load attendance records.", e);

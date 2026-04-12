@@ -6,10 +6,15 @@ import com.example.java_lms_group_01.model.users.Student;
 import com.example.java_lms_group_01.util.StudentContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
 
+/**
+ * Lets the student view basic profile details and update profile information,
+ * including the account password.
+ */
 public class StudentProfilePageController {
 
     @FXML
@@ -30,6 +35,12 @@ public class StudentProfilePageController {
     private TextField txtGpa;
     @FXML
     private TextField txtStatus;
+    @FXML
+    private PasswordField txtCurrentPassword;
+    @FXML
+    private PasswordField txtNewPassword;
+    @FXML
+    private PasswordField txtConfirmPassword;
 
     private final UserProfileRepository userProfileRepository = new UserProfileRepository();
     private Student currentStudent;
@@ -59,18 +70,29 @@ public class StudentProfilePageController {
         currentStudent.setEmail(value(txtEmail));
         currentStudent.setPhoneNumber(value(txtPhone));
         currentStudent.setAddress(value(txtAddress));
+        String currentPassword = passwordValue(txtCurrentPassword);
+        String newPassword = passwordValue(txtNewPassword);
+        String confirmPassword = passwordValue(txtConfirmPassword);
 
         try {
+            validatePasswordChange(currentPassword, newPassword, confirmPassword);
             userProfileRepository.updateStudentProfile(
                     currentStudent.getRegistrationNo(),
                     currentStudent.getEmail(),
                     currentStudent.getPhoneNumber(),
                     currentStudent.getAddress(),
-                    value(txtPicturePath)
+                    value(txtPicturePath),
+                    currentPassword,
+                    newPassword
             );
+            clearPasswordFields();
             show(Alert.AlertType.INFORMATION, "Profile Updated",
-                    "Contact details and profile picture path updated successfully.");
-        } catch (Exception e) {
+                    hasPasswordChange(currentPassword, newPassword, confirmPassword)
+                            ? "Profile details and password updated successfully."
+                            : "Contact details and profile picture path updated successfully.");
+        } catch (IllegalArgumentException e) {
+            show(Alert.AlertType.WARNING, "Validation Error", e.getMessage());
+        } catch (SQLException e) {
             show(Alert.AlertType.ERROR, "Database Error", e.getMessage());
         }
     }
@@ -117,6 +139,35 @@ public class StudentProfilePageController {
 
     private String value(TextField field) {
         return field.getText() == null ? "" : field.getText().trim();
+    }
+
+    private String passwordValue(PasswordField field) {
+        return field.getText() == null ? "" : field.getText().trim();
+    }
+
+    private void validatePasswordChange(String currentPassword, String newPassword, String confirmPassword) {
+        if (!hasPasswordChange(currentPassword, newPassword, confirmPassword)) {
+            return;
+        }
+        if (currentPassword.isBlank() || newPassword.isBlank() || confirmPassword.isBlank()) {
+            throw new IllegalArgumentException("Enter current, new, and confirm password to change the password.");
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("New password and confirm password do not match.");
+        }
+        if (newPassword.equals(currentPassword)) {
+            throw new IllegalArgumentException("New password must be different from the current password.");
+        }
+    }
+
+    private boolean hasPasswordChange(String currentPassword, String newPassword, String confirmPassword) {
+        return !currentPassword.isBlank() || !newPassword.isBlank() || !confirmPassword.isBlank();
+    }
+
+    private void clearPasswordFields() {
+        txtCurrentPassword.clear();
+        txtNewPassword.clear();
+        txtConfirmPassword.clear();
     }
 
     private String safe(String text) {

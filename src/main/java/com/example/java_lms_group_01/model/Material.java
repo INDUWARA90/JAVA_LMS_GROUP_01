@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row that shows one uploaded lecture material.
+ */
 public class Material {
     private final SimpleStringProperty materialId;
     private final SimpleStringProperty courseCode;

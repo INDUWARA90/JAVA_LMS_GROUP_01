@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import java.time.LocalDate;
 
+/**
+ * Simple data object used by the admin user-management screens.
+ */
 public class UserManagementRow {
     private String userId;
     private String firstName;

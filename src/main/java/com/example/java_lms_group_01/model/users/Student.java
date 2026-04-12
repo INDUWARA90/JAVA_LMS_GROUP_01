@@ -2,10 +2,13 @@ package com.example.java_lms_group_01.model.users;
 
 import java.time.LocalDate;
 
+/**
+ * Student object used when the program needs student-specific fields.
+ */
 public class Student extends User {
-    private String registrationNo ;
+    private String registrationNo;
     private String password;
-    private float GPA;
+    private float gpa;
     private String status;
 
     public Student() {
@@ -24,11 +27,11 @@ public class Student extends User {
     }
 
     public float getGPA() {
-        return GPA;
+        return gpa;
     }
 
     public void setGPA(float GPA) {
-        this.GPA = GPA;
+        this.gpa = GPA;
     }
 
     public String getStatus() {
@@ -46,5 +49,4 @@ public class Student extends User {
     public void setRegistrationNo(String registrationNo) {
         this.registrationNo = registrationNo;
     }
-
 }

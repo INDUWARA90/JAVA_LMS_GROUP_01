@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Calculates course marks by reading the assessment weights for a course.
+ */
 public final class AssessmentStructureUtil {
 
     private AssessmentStructureUtil() {
@@ -28,15 +31,17 @@ public final class AssessmentStructureUtil {
 
         double caMarks = topQuizContribution + assessmentContribution + projectContribution + midTermContribution;
         double endMarks = calculateEndMarks(weights, finalTheory, finalPractical);
-        return new MarkBreakdown(caMarks, endMarks, caMarks + endMarks);
+        return new MarkBreakdown(
+                caMarks,
+                endMarks,
+                caMarks + endMarks,
+                calculateCaMaximum(weights),
+                calculateEndMaximum(weights)
+        );
     }
 
     private static Map<String, Double> loadWeights(Connection connection, String courseCode) throws SQLException {
-        String sql = """
-                SELECT component, weight
-                FROM assessment_structure
-                WHERE courseCode = ?
-                """;
+        String sql = "SELECT component, weight FROM assessment_structure WHERE courseCode = ?";
         Map<String, Double> weights = new HashMap<>();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, courseCode);
@@ -57,18 +62,34 @@ public final class AssessmentStructureUtil {
             return "";
         }
         String normalized = component.trim().toLowerCase().replace(' ', '_');
-        return switch (normalized) {
-            case "quiz1" -> "quiz_1";
-            case "quiz2" -> "quiz_2";
-            case "quiz3" -> "quiz_3";
-            case "assignment" -> "assessment";
-            case "project_work" -> "project";
-            case "mid_exam", "midterm", "mid" -> "mid_term";
-            case "end_theory", "theory", "endtheory" -> "final_theory";
-            case "end_practical", "practical", "endpractical" -> "final_practical";
-            case "endexam", "finalexam", "end_exam_marks" -> "end_exam";
-            default -> normalized;
-        };
+        if (normalized.equals("quiz1")) {
+            return "quiz_1";
+        }
+        if (normalized.equals("quiz2")) {
+            return "quiz_2";
+        }
+        if (normalized.equals("quiz3")) {
+            return "quiz_3";
+        }
+        if (normalized.equals("assignment")) {
+            return "assessment";
+        }
+        if (normalized.equals("project_work")) {
+            return "project";
+        }
+        if (normalized.equals("mid_exam") || normalized.equals("midterm") || normalized.equals("mid")) {
+            return "mid_term";
+        }
+        if (normalized.equals("end_theory") || normalized.equals("theory") || normalized.equals("endtheory")) {
+            return "final_theory";
+        }
+        if (normalized.equals("end_practical") || normalized.equals("practical") || normalized.equals("endpractical")) {
+            return "final_practical";
+        }
+        if (normalized.equals("endexam") || normalized.equals("finalexam") || normalized.equals("end_exam_marks")) {
+            return "end_exam";
+        }
+        return normalized;
     }
 
     private static double weightedMark(Double mark, double weight) {
@@ -87,6 +108,25 @@ public final class AssessmentStructureUtil {
         double finalTheoryContribution = weightedMark(finalTheory, weights.getOrDefault("final_theory", 0.0));
         double finalPracticalContribution = weightedMark(finalPractical, weights.getOrDefault("final_practical", 0.0));
         return finalTheoryContribution + finalPracticalContribution;
+    }
+
+    private static double calculateCaMaximum(Map<String, Double> weights) {
+        return topTwoQuizWeight(
+                weights.getOrDefault("quiz_1", 0.0),
+                weights.getOrDefault("quiz_2", 0.0),
+                weights.getOrDefault("quiz_3", 0.0)
+        )
+                + weights.getOrDefault("assessment", 0.0)
+                + weights.getOrDefault("project", 0.0)
+                + weights.getOrDefault("mid_term", 0.0);
+    }
+
+    private static double calculateEndMaximum(Map<String, Double> weights) {
+        double combinedWeight = weights.getOrDefault("end_exam", 0.0);
+        if (combinedWeight > 0) {
+            return combinedWeight;
+        }
+        return weights.getOrDefault("final_theory", 0.0) + weights.getOrDefault("final_practical", 0.0);
     }
 
     private static Double averageEndExamMark(Double finalTheory, Double finalPractical) {
@@ -113,7 +153,7 @@ public final class AssessmentStructureUtil {
 
         for (int i = 0; i < quizzes.length - 1; i++) {
             for (int j = i + 1; j < quizzes.length; j++) {
-                if (quizzes[j].mark() > quizzes[i].mark()) {
+                if (quizzes[j].getMark() > quizzes[i].getMark()) {
                     QuizScore temp = quizzes[i];
                     quizzes[i] = quizzes[j];
                     quizzes[j] = temp;
@@ -121,12 +161,38 @@ public final class AssessmentStructureUtil {
             }
         }
 
-        return quizzes[0].contribution() + quizzes[1].contribution();
+        return quizzes[0].getContribution() + quizzes[1].getContribution();
     }
 
-    private record QuizScore(double mark, double contribution) {
+    private static double topTwoQuizWeight(double quiz1Weight, double quiz2Weight, double quiz3Weight) {
+        double[] quizWeights = {quiz1Weight, quiz2Weight, quiz3Weight};
+        for (int i = 0; i < quizWeights.length - 1; i++) {
+            for (int j = i + 1; j < quizWeights.length; j++) {
+                if (quizWeights[j] > quizWeights[i]) {
+                    double temp = quizWeights[i];
+                    quizWeights[i] = quizWeights[j];
+                    quizWeights[j] = temp;
+                }
+            }
+        }
+        return quizWeights[0] + quizWeights[1];
+    }
+
+    private static class QuizScore {
+        private final double mark;
+        private final double contribution;
+
         private QuizScore(Double mark, double weight) {
-            this(mark == null ? -1.0 : mark, weightedValue(mark, weight));
+            this.mark = mark == null ? -1.0 : mark;
+            this.contribution = weightedValue(mark, weight);
+        }
+
+        public double getMark() {
+            return mark;
+        }
+
+        public double getContribution() {
+            return contribution;
         }
     }
 
@@ -134,5 +200,39 @@ public final class AssessmentStructureUtil {
         return mark == null || weight <= 0 ? 0.0 : mark * weight / 100.0;
     }
 
-    public record MarkBreakdown(double caMarks, double endMarks, double totalMarks) {}
+    public static class MarkBreakdown {
+        private final double caMarks;
+        private final double endMarks;
+        private final double totalMarks;
+        private final double caMaximum;
+        private final double endMaximum;
+
+        public MarkBreakdown(double caMarks, double endMarks, double totalMarks, double caMaximum, double endMaximum) {
+            this.caMarks = caMarks;
+            this.endMarks = endMarks;
+            this.totalMarks = totalMarks;
+            this.caMaximum = caMaximum;
+            this.endMaximum = endMaximum;
+        }
+
+        public double getCaMarks() {
+            return caMarks;
+        }
+
+        public double getEndMarks() {
+            return endMarks;
+        }
+
+        public double getTotalMarks() {
+            return totalMarks;
+        }
+
+        public double getCaMaximum() {
+            return caMaximum;
+        }
+
+        public double getEndMaximum() {
+            return endMaximum;
+        }
+    }
 }

@@ -1,5 +1,8 @@
 package com.example.java_lms_group_01.model.users;
 
+/**
+ * User roles available in the system.
+ */
 public enum UserRole {
     ADMIN("Admin"),
     LECTURER("Lecturer"),
@@ -12,7 +15,7 @@ public enum UserRole {
         this.value = value;
     }
 
-    public String value() {
+    public String getValue() {
         return value;
     }
 

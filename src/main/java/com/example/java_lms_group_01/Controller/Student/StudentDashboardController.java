@@ -17,6 +17,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Main dashboard for students.
+ * The selected page is loaded into the content area on the right side.
+ */
 public class StudentDashboardController {
 
     @FXML
@@ -93,6 +97,7 @@ public class StudentDashboardController {
         }
     }
 
+    // Load a student page into the center area.
     private void loadContent(String fxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));

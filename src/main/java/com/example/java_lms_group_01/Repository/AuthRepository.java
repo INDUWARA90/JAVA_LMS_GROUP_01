@@ -9,8 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Handles login validation.
+ * This class checks each role table until it finds a matching registration number and password.
+ */
 public class AuthRepository {
 
+    // Return the role of the user who logged in successfully.
     public UserRole findRoleByRegistrationNo(String registrationNo, String rawPassword) throws SQLException {
         Connection connection = DBConnection.getInstance().getConnection();
         if (isPasswordValid(connection, "SELECT password FROM admin WHERE registrationNo = ?", registrationNo, rawPassword)) {
@@ -28,6 +33,7 @@ public class AuthRepository {
         return null;
     }
 
+    // Compare the entered password with the stored password for one table.
     private boolean isPasswordValid(Connection connection, String sql, String registrationNo, String rawPassword) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, registrationNo);

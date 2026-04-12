@@ -2,17 +2,22 @@ package com.example.java_lms_group_01.Repository;
 
 import com.example.java_lms_group_01.model.UserManagementRow;
 import com.example.java_lms_group_01.util.DBConnection;
+import com.example.java_lms_group_01.util.PasswordUtil;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Reads and updates the small profile section used by students, lecturers,
+ * and technical officers.
+ */
 public class UserProfileRepository {
 
     private final UserImageRepository userImageRepository = new UserImageRepository();
 
+    // Load the profile shown on the student profile page.
     public UserManagementRow findStudentProfile(String registrationNo) throws SQLException {
         String sql = """
                 SELECT u.user_id, u.firstName, u.lastName, u.email, u.phoneNumber, u.address,
@@ -122,7 +127,8 @@ public class UserProfileRepository {
         }
     }
 
-    public void updateStudentProfile(String registrationNo, String email, String phone, String address, String imagePath) throws SQLException {
+    public void updateStudentProfile(String registrationNo, String email, String phone, String address,
+                                     String imagePath, String currentPassword, String newPassword) throws SQLException {
         String sql = "UPDATE users SET email = ?, phoneNumber = ?, address = ? WHERE user_id = ?";
         Connection connection = DBConnection.getInstance().getConnection();
         boolean autoCommit = connection.getAutoCommit();
@@ -133,11 +139,20 @@ public class UserProfileRepository {
             statement.setString(3, emptyToNull(address));
             statement.setString(4, registrationNo);
             statement.executeUpdate();
+            if (hasText(newPassword)) {
+                updateStudentPassword(connection, registrationNo, currentPassword, newPassword);
+            }
             userImageRepository.upsertImagePath(connection, registrationNo, imagePath);
             connection.commit();
+        } catch (IllegalArgumentException e) {
+            connection.rollback();
+            throw e;
         } catch (Exception e) {
             connection.rollback();
-            throw e instanceof SQLException ? (SQLException) e : new SQLException(e.getMessage(), e);
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            throw new SQLException(e.getMessage(), e);
         } finally {
             connection.setAutoCommit(autoCommit);
         }
@@ -169,7 +184,10 @@ public class UserProfileRepository {
             connection.commit();
         } catch (Exception e) {
             connection.rollback();
-            throw e instanceof SQLException ? (SQLException) e : new SQLException(e.getMessage(), e);
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            throw new SQLException(e.getMessage(), e);
         } finally {
             connection.setAutoCommit(autoCommit);
         }
@@ -193,7 +211,10 @@ public class UserProfileRepository {
             connection.commit();
         } catch (Exception e) {
             connection.rollback();
-            throw e instanceof SQLException ? (SQLException) e : new SQLException(e.getMessage(), e);
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            throw new SQLException(e.getMessage(), e);
         } finally {
             connection.setAutoCommit(autoCommit);
         }
@@ -205,5 +226,37 @@ public class UserProfileRepository {
         }
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private void updateStudentPassword(Connection connection, String registrationNo,
+                                       String currentPassword, String newPassword) throws SQLException {
+        String storedPassword = findStudentPassword(connection, registrationNo);
+        if (storedPassword == null || !PasswordUtil.matches(currentPassword, storedPassword)) {
+            throw new IllegalArgumentException("Current password is incorrect.");
+        }
+
+        try (PreparedStatement statement =
+                     connection.prepareStatement("UPDATE student SET password = ? WHERE registrationNo = ?")) {
+            statement.setString(1, PasswordUtil.hashPassword(newPassword.trim()));
+            statement.setString(2, registrationNo);
+            statement.executeUpdate();
+        }
+    }
+
+    private String findStudentPassword(Connection connection, String registrationNo) throws SQLException {
+        try (PreparedStatement statement =
+                     connection.prepareStatement("SELECT password FROM student WHERE registrationNo = ?")) {
+            statement.setString(1, registrationNo);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return resultSet.getString("password");
+            }
+        }
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 }

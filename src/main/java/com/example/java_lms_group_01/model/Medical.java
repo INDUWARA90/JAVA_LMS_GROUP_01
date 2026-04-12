@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row used to display one medical submission.
+ */
 public class Medical {
     private final SimpleStringProperty medicalId;
     private final SimpleStringProperty studentReg;

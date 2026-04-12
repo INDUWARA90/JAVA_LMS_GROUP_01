@@ -7,6 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Handles saving and loading profile image paths for users.
+ */
 public class UserImageRepository {
 
     public String findImagePathByUserId(String userId) throws SQLException {
@@ -36,11 +39,9 @@ public class UserImageRepository {
             return;
         }
 
-        String sql = """
-                INSERT INTO user_profile_images (user_id, image_path)
-                VALUES (?, ?)
-                ON DUPLICATE KEY UPDATE image_path = VALUES(image_path)
-                """;
+        String sql = "INSERT INTO user_profile_images (user_id, image_path) "
+                + "VALUES (?, ?) "
+                + "ON DUPLICATE KEY UPDATE image_path = VALUES(image_path)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, userId);
             statement.setString(2, imagePath.trim());

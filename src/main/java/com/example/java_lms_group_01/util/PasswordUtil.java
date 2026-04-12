@@ -5,6 +5,9 @@ import javax.crypto.spec.PBEKeySpec;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * Helper methods for hashing passwords and comparing login passwords.
+ */
 public final class PasswordUtil {
 
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";

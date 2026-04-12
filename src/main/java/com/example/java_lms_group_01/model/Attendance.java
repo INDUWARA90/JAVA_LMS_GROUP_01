@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row used to show one attendance record.
+ */
 public class Attendance {
     private final SimpleStringProperty attendanceId;
     private final SimpleStringProperty studentReg;

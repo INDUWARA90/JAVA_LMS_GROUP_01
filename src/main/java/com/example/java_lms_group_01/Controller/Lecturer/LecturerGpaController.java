@@ -2,7 +2,6 @@ package com.example.java_lms_group_01.Controller.Lecturer;
 
 import com.example.java_lms_group_01.Repository.LecturerRepository;
 import com.example.java_lms_group_01.model.Performance;
-import com.example.java_lms_group_01.util.GradeScaleUtil;
 import com.example.java_lms_group_01.util.LecturerContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -11,7 +10,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Shows calculated performance, grades, GPA, and SGPA for students.
+ */
 public class LecturerGpaController {
 
     @FXML
@@ -58,27 +62,24 @@ public class LecturerGpaController {
         loadPerformance(txtSearch.getText());
     }
 
-    @FXML
-    private void refreshPerformance() {
-        txtSearch.clear();
-        loadPerformance(null);
-    }
-
     private void loadPerformance(String keyword) {
         try {
-            var rows = lecturerRepository.findPerformanceByLecturer(currentLecturer(), keyword).stream()
-                    .map(r -> new Performance(
-                            r.studentReg(),
-                            r.studentName(),
-                            r.courseCode(),
-                            String.format("%.2f", r.caMarks()),
-                            String.format("%.2f", r.endMarks()),
-                            String.format("%.2f", r.totalMarks()),
-                            GradeScaleUtil.toLetterGrade(r.totalMarks()),
-                            r.gpa() == null ? "" : String.format("%.2f", r.gpa()),
-                            r.sgpa() == null ? "" : String.format("%.2f", r.sgpa())
-                    ))
-                    .toList();
+            List<LecturerRepository.PerformanceRecord> recordList =
+                    lecturerRepository.findPerformanceByLecturer(currentLecturer(), keyword);
+            List<Performance> rows = new ArrayList<>();
+            for (LecturerRepository.PerformanceRecord record : recordList) {
+                rows.add(new Performance(
+                        record.getStudentReg(),
+                        record.getStudentName(),
+                        record.getCourseCode(),
+                        String.format("%.2f", record.getCaMarks()),
+                        String.format("%.2f", record.getEndMarks()),
+                        String.format("%.2f", record.getTotalMarks()),
+                        record.getPublishedGrade(),
+                        record.getGpa() == null ? "" : String.format("%.2f", record.getGpa()),
+                        record.getSgpa() == null ? "" : String.format("%.2f", record.getSgpa())
+                ));
+            }
             tblPerformance.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load marks/grades/GPA.", e);

@@ -1,4 +1,4 @@
-package com.example.java_lms_group_01.Controller.AdminDashboard;
+package com.example.java_lms_group_01.Controller.Admin;
 
 import com.example.java_lms_group_01.model.Course;
 import com.example.java_lms_group_01.model.CourseType;
@@ -6,6 +6,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
+/**
+ * Small controller used inside the course dialog.
+ * It reads the course form fields and builds a Course object.
+ */
 public class CourseFormController {
 
     @FXML
@@ -29,12 +33,14 @@ public class CourseFormController {
     @FXML
     private ComboBox<CourseType> cmbCourseType;
 
+    // Prepare the form for creating a new course.
     public void setupForCreate() {
         txtCourseCode.setDisable(false);
         cmbCourseType.getItems().setAll(CourseType.values());
         cmbCourseType.setValue(CourseType.THEORY);
     }
 
+    // Fill the form with an existing course before editing.
     public void setupForEdit(Course course) {
         setupForCreate();
         txtCourseCode.setText(course.getCourseCode());
@@ -47,6 +53,7 @@ public class CourseFormController {
         cmbCourseType.setValue(course.getCourseTypeEnum());
     }
 
+    // Read form values, validate them, and return a Course object.
     public Course buildCourse() {
         String courseCode = value(txtCourseCode);
         String name = value(txtName);

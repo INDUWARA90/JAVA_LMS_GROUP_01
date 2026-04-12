@@ -9,15 +9,16 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Shows medical submissions that belong to the logged-in student.
+ */
 public class StudentMedicalPageController {
 
     @FXML
     private TableView<Medical> tblMedical;
-    @FXML
-    private TableColumn<Medical, String> colMedicalId;
-    @FXML
-    private TableColumn<Medical, String> colStudentReg;
     @FXML
     private TableColumn<Medical, String> colCourseCode;
     @FXML
@@ -27,25 +28,17 @@ public class StudentMedicalPageController {
     @FXML
     private TableColumn<Medical, String> colSessionType;
     @FXML
-    private TableColumn<Medical, String> colAttendanceId;
-    @FXML
     private TableColumn<Medical, String> colApprovalStatus;
-    @FXML
-    private TableColumn<Medical, String> colTechOfficerReg;
 
     private final StudentRepository studentRepository = new StudentRepository();
 
     @FXML
     public void initialize() {
-        colMedicalId.setCellValueFactory(d -> d.getValue().medicalIdProperty());
-        colStudentReg.setCellValueFactory(d -> d.getValue().studentRegProperty());
         colCourseCode.setCellValueFactory(d -> d.getValue().courseCodeProperty());
         colSubmissionDate.setCellValueFactory(d -> d.getValue().submissionDateProperty());
         colDescription.setCellValueFactory(d -> d.getValue().descriptionProperty());
         colSessionType.setCellValueFactory(d -> d.getValue().sessionTypeProperty());
-        colAttendanceId.setCellValueFactory(d -> d.getValue().attendanceIdProperty());
         colApprovalStatus.setCellValueFactory(d -> d.getValue().approvalStatusProperty());
-        colTechOfficerReg.setCellValueFactory(d -> d.getValue().techOfficerRegProperty());
         loadMedical();
     }
 
@@ -56,9 +49,21 @@ public class StudentMedicalPageController {
         }
 
         try {
-            var rows = studentRepository.findMedicalByStudent(regNo).stream()
-                    .map(r -> new Medical(r.medicalId(), r.studentReg(), r.courseCode(), r.submissionDate(), r.description(), r.sessionType(), r.attendanceId(), r.approvalStatus(), r.techOfficerReg()))
-                    .toList();
+            List<StudentRepository.MedicalRecord> recordList = studentRepository.findMedicalByStudent(regNo);
+            List<Medical> rows = new ArrayList<>();
+            for (StudentRepository.MedicalRecord record : recordList) {
+                rows.add(new Medical(
+                        record.getMedicalId(),
+                        record.getStudentReg(),
+                        record.getCourseCode(),
+                        record.getSubmissionDate(),
+                        record.getDescription(),
+                        record.getSessionType(),
+                        record.getAttendanceId(),
+                        record.getApprovalStatus(),
+                        record.getTechOfficerReg()
+                ));
+            }
             tblMedical.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load medical details.", e);

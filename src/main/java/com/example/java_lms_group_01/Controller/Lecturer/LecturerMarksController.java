@@ -148,12 +148,6 @@ public class LecturerMarksController {
     }
 
     @FXML
-    private void refreshMarks() {
-        txtSearch.clear();
-        loadMarks(null);
-    }
-
-    @FXML
     private void clearForm() {
         txtStudentReg.clear();
         txtCourseCode.clear();
@@ -170,10 +164,24 @@ public class LecturerMarksController {
 
     private void loadMarks(String keyword) {
         try {
-            var rows = lecturerRepository.findMarksByLecturer(currentLecturer(), keyword).stream()
-                    .map(r -> new Mark(r.markId(), r.studentReg(), r.courseCode(), r.quiz1(), r.quiz2(), r.quiz3(),
-                            r.assessment(), r.project(), r.midTerm(), r.finalTheory(), r.finalPractical()))
-                    .toList();
+            java.util.List<LecturerRepository.MarksRecord> recordList =
+                    lecturerRepository.findMarksByLecturer(currentLecturer(), keyword);
+            java.util.List<Mark> rows = new java.util.ArrayList<>();
+            for (LecturerRepository.MarksRecord record : recordList) {
+                rows.add(new Mark(
+                        record.getMarkId(),
+                        record.getStudentReg(),
+                        record.getCourseCode(),
+                        record.getQuiz1(),
+                        record.getQuiz2(),
+                        record.getQuiz3(),
+                        record.getAssessment(),
+                        record.getProject(),
+                        record.getMidTerm(),
+                        record.getFinalTheory(),
+                        record.getFinalPractical()
+                ));
+            }
             tblMarks.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load marks.", e);

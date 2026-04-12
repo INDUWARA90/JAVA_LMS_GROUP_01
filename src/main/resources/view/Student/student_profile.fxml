@@ -6,7 +6,7 @@
       fx:controller="com.example.java_lms_group_01.Controller.Student.StudentProfilePageController"
       style="-fx-padding: 18; -fx-background-color: white;">
     <Label text="Student Profile" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
-    <Label text="Only email, phone, address, and profile picture path can be updated." style="-fx-text-fill: #4b5563;" />
+    <Label text="Email, phone, address, profile picture path, and password can be updated here." style="-fx-text-fill: #4b5563;" />
 
     <GridPane hgap="12" vgap="10">
         <Label text="Registration No:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
@@ -35,6 +35,15 @@
 
         <Label text="Profile Picture Path:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
         <TextField fx:id="txtPicturePath" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+        <Label text="Current Password:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+        <PasswordField fx:id="txtCurrentPassword" promptText="Enter current password" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+        <Label text="New Password:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+        <PasswordField fx:id="txtNewPassword" promptText="Leave blank to keep current password" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+        <Label text="Confirm Password:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+        <PasswordField fx:id="txtConfirmPassword" promptText="Re-enter new password" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
     </GridPane>
 
     <Button text="Save" onAction="#saveProfile" prefWidth="120" />

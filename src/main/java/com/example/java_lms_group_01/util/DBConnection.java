@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Simple singleton used to keep one database connection for the application.
+ * Every repository calls this class before running SQL.
+ */
 public class DBConnection {
 
 

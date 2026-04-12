@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row that combines attendance details with any related medical record.
+ */
 public class AttendanceMedical {
     private final SimpleStringProperty attendanceId;
     private final SimpleStringProperty studentReg;
@@ -42,5 +45,13 @@ public class AttendanceMedical {
     public SimpleStringProperty techOfficerRegProperty() { return techOfficerReg; }
 
     public String getAttendanceId() { return attendanceId.get(); }
+    public String getStudentReg() { return studentReg.get(); }
+    public String getCourseCode() { return courseCode.get(); }
+    public String getDate() { return date.get(); }
+    public String getSessionType() { return sessionType.get(); }
+    public String getAttendanceStatus() { return attendanceStatus.get(); }
     public String getMedicalId() { return medicalId.get(); }
+    public String getMedicalDescription() { return medicalDescription.get(); }
+    public String getMedicalApprovalStatus() { return medicalApprovalStatus.get(); }
+    public String getTechOfficerReg() { return techOfficerReg.get(); }
 }

@@ -1,10 +1,11 @@
 package com.example.java_lms_group_01.model.users;
 
-import java.time.LocalDate;
-
+/**
+ * Lecturer object with department, position, and registration details.
+ */
 public class Lecturer extends User {
-    private String registrationNo ;
-    private LocalDate department;
+    private String registrationNo;
+    private String department;
     private String position;
     private String password;
 
@@ -16,11 +17,11 @@ public class Lecturer extends User {
         this.registrationNo = registrationNo;
     }
 
-    public LocalDate getDepartment() {
+    public String getDepartment() {
         return department;
     }
 
-    public void setDepartment(LocalDate department) {
+    public void setDepartment(String department) {
         this.department = department;
     }
 
@@ -44,10 +45,8 @@ public class Lecturer extends User {
     public String toString() {
         return "Lecturer{" +
                 "registrationNo='" + registrationNo + '\'' +
-                ", department=" + department +
+                ", department='" + department + '\'' +
                 ", position='" + position + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
-
 }

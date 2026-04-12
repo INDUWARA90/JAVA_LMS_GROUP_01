@@ -6,20 +6,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Shows all notices to the lecturer.
+ */
 public class LecturerNoticesController {
 
     @FXML
-    private TextField txtSearch;
-    @FXML
     private TableView<Notice> tblNotices;
-    @FXML
-    private TableColumn<Notice, String> colNoticeId;
     @FXML
     private TableColumn<Notice, String> colTitle;
     @FXML
@@ -33,39 +30,20 @@ public class LecturerNoticesController {
 
     @FXML
     public void initialize() {
-        colNoticeId.setCellValueFactory(d -> d.getValue().noticeIdProperty());
         colTitle.setCellValueFactory(d -> d.getValue().titleProperty());
         colContent.setCellValueFactory(d -> d.getValue().contentProperty());
         colDate.setCellValueFactory(d -> d.getValue().publishDateProperty());
         colCreatedBy.setCellValueFactory(d -> d.getValue().createdByProperty());
-        loadNotices(null);
+        loadNotices();
     }
 
-    @FXML
-    private void searchNotices() {
-        loadNotices(txtSearch.getText());
-    }
-
-    @FXML
-    private void refreshNotices() {
-        txtSearch.clear();
-        loadNotices(null);
-    }
-
-    private void loadNotices(String keyword) {
+    private void loadNotices() {
         try {
-            List<Notice> notices = keyword == null || keyword.isBlank()
-                    ? noticeRepository.findAll()
-                    : noticeRepository.findByKeyword(keyword);
-
+            List<Notice> notices = noticeRepository.findAll();
             tblNotices.getItems().setAll(notices);
         } catch (SQLException e) {
             showError("Failed to load notices.", e);
         }
-    }
-
-    private String safe(String value) {
-        return value == null ? "" : value;
     }
 
     private void showError(String message, Exception e) {

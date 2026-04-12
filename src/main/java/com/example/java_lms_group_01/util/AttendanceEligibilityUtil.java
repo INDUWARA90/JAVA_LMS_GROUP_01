@@ -1,5 +1,8 @@
 package com.example.java_lms_group_01.util;
 
+/**
+ * Helper methods used when the program calculates exam eligibility from attendance.
+ */
 public final class AttendanceEligibilityUtil {
 
     public static final double MIN_ELIGIBILITY_PERCENTAGE = 80.0;
@@ -19,8 +22,9 @@ public final class AttendanceEligibilityUtil {
     }
 
     public static String toEligibilityStatus(int eligibleSessions, int totalSessions) {
-        return calculatePercentage(eligibleSessions, totalSessions) >= MIN_ELIGIBILITY_PERCENTAGE
-                ? "Eligible"
-                : "Not Eligible";
+        if (calculatePercentage(eligibleSessions, totalSessions) >= MIN_ELIGIBILITY_PERCENTAGE) {
+            return "Eligible";
+        }
+        return "Not Eligible";
     }
 }

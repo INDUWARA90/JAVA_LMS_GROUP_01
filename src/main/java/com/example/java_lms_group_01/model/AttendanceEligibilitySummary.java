@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row that shows attendance percentage and exam eligibility by course.
+ */
 public class AttendanceEligibilitySummary {
     private final SimpleStringProperty courseCode;
     private final SimpleStringProperty eligibleSessions;
@@ -23,4 +26,10 @@ public class AttendanceEligibilitySummary {
     public SimpleStringProperty totalSessionsProperty() { return totalSessions; }
     public SimpleStringProperty attendancePctProperty() { return attendancePct; }
     public SimpleStringProperty eligibilityProperty() { return eligibility; }
+
+    public String getCourseCode() { return courseCode.get(); }
+    public String getEligibleSessions() { return eligibleSessions.get(); }
+    public String getTotalSessions() { return totalSessions.get(); }
+    public String getAttendancePct() { return attendancePct.get(); }
+    public String getEligibility() { return eligibility.get(); }
 }

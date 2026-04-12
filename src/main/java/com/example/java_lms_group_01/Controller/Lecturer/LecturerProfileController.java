@@ -8,6 +8,9 @@ import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
 
+/**
+ * Lets the logged-in lecturer view and update personal profile details.
+ */
 public class LecturerProfileController {
 
     @FXML
@@ -70,7 +73,8 @@ public class LecturerProfileController {
         }
 
         try {
-            var profile = userProfileRepository.findLecturerProfile(regNo);
+            com.example.java_lms_group_01.model.UserManagementRow profile =
+                    userProfileRepository.findLecturerProfile(regNo);
             if (profile == null) {
                 return;
             }

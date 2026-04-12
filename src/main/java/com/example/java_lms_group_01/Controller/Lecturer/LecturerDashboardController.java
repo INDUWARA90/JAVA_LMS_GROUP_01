@@ -19,6 +19,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main dashboard for lecturers.
+ * Each navigation method loads one lecturer page into the shared content area.
+ */
 public class LecturerDashboardController {
 
     @FXML
@@ -110,6 +114,7 @@ public class LecturerDashboardController {
         }
     }
 
+    // Load a lecturer sub page into the center content area.
     private void loadContent(String fxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));

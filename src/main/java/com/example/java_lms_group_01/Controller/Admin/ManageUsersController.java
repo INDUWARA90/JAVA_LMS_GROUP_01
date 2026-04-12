@@ -1,4 +1,4 @@
-package com.example.java_lms_group_01.Controller.AdminDashboard;
+package com.example.java_lms_group_01.Controller.Admin;
 
 import com.example.java_lms_group_01.model.users.Admin;
 import com.example.java_lms_group_01.model.UserManagementRow;
@@ -31,6 +31,11 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Admin screen used to manage every user role.
+ * This controller loads the tables for each tab and opens a simple dialog
+ * when the admin wants to add or edit a user.
+ */
 public class ManageUsersController implements Initializable {
 
     @FXML
@@ -164,12 +169,12 @@ public class ManageUsersController implements Initializable {
 
             if (created) {
                 loadAllTables();
-                showInfo(role.value() + " created successfully.");
+            showInfo(role.getValue() + " created successfully.");
             }
         } catch (IllegalArgumentException e) {
             showInfo(e.getMessage());
         } catch (SQLException e) {
-            showError("Failed to add " + role.value() + ".", e);
+            showError("Failed to add " + role.getValue() + ".", e);
         }
     }
 
@@ -197,12 +202,12 @@ public class ManageUsersController implements Initializable {
 
             if (updated) {
                 loadAllTables();
-                showInfo(role.value() + " updated successfully.");
+            showInfo(role.getValue() + " updated successfully.");
             }
         } catch (IllegalArgumentException e) {
             showInfo(e.getMessage());
         } catch (SQLException e) {
-            showError("Failed to update " + role.value() + ".", e);
+            showError("Failed to update " + role.getValue() + ".", e);
         }
     }
 
@@ -221,7 +226,7 @@ public class ManageUsersController implements Initializable {
         }
 
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setHeaderText("Delete " + role.value());
+        confirmation.setHeaderText("Delete " + role.getValue());
         confirmation.setContentText("Delete registration number " + selected.getRegistrationNo() + "?");
         Optional<ButtonType> answer = confirmation.showAndWait();
         if (answer.isEmpty() || answer.get() != ButtonType.OK) {
@@ -233,10 +238,10 @@ public class ManageUsersController implements Initializable {
 
             if (deleted) {
                 loadAllTables();
-                showInfo(role.value() + " deleted successfully.");
+            showInfo(role.getValue() + " deleted successfully.");
             }
         } catch (SQLException e) {
-            showError("Failed to delete " + role.value() + ".", e);
+            showError("Failed to delete " + role.getValue() + ".", e);
         }
     }
 
@@ -258,30 +263,42 @@ public class ManageUsersController implements Initializable {
     }
 
     private UserManagementRow getSelectedRowByRole(UserRole role) {
-        return switch (role) {
-            case ADMIN -> tblAdmins.getSelectionModel().getSelectedItem();
-            case LECTURER -> tblLecturers.getSelectionModel().getSelectedItem();
-            case STUDENT -> tblStudents.getSelectionModel().getSelectedItem();
-            case TECHNICAL_OFFICER -> tblTechnicalOfficers.getSelectionModel().getSelectedItem();
-            default -> null;
-        };
+        if (role == UserRole.ADMIN) {
+            return tblAdmins.getSelectionModel().getSelectedItem();
+        }
+        if (role == UserRole.LECTURER) {
+            return tblLecturers.getSelectionModel().getSelectedItem();
+        }
+        if (role == UserRole.STUDENT) {
+            return tblStudents.getSelectionModel().getSelectedItem();
+        }
+        if (role == UserRole.TECHNICAL_OFFICER) {
+            return tblTechnicalOfficers.getSelectionModel().getSelectedItem();
+        }
+        return null;
     }
 
     private UserManagementRow showRoleDialog(UserRole role, UserManagementRow existing) {
-        return switch (role) {
-            case ADMIN -> showAdminDialog(existing);
-            case LECTURER -> showLecturerDialog(existing);
-            case STUDENT -> showStudentDialog(existing);
-            case TECHNICAL_OFFICER -> showTechnicalOfficerDialog(existing);
-            default -> null;
-        };
+        if (role == UserRole.ADMIN) {
+            return showAdminDialog(existing);
+        }
+        if (role == UserRole.LECTURER) {
+            return showLecturerDialog(existing);
+        }
+        if (role == UserRole.STUDENT) {
+            return showStudentDialog(existing);
+        }
+        if (role == UserRole.TECHNICAL_OFFICER) {
+            return showTechnicalOfficerDialog(existing);
+        }
+        return null;
     }
 
     private UserManagementRow showAdminDialog(UserManagementRow existing) {
         boolean edit = existing != null;
         Dialog<UserManagementRow> dialog = baseDialog(edit ? "Edit Admin" : "Add Admin", edit);
 
-        TextField[] common = commonFields(existing);
+        CommonUserFields formFields = createCommonFields(existing);
         DatePicker dob = dateOfBirthPicker(existing);
         ComboBox<String> gender = genderBox(existing);
 
@@ -292,39 +309,18 @@ public class ManageUsersController implements Initializable {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        int r = addCommonGrid(grid, common, dob, gender);
-        grid.add(new Label("Registration No:"), 0, r);
-        grid.add(txtReg, 1, r++);
-        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, r);
-        grid.add(txtPassword, 1, r);
+        int rowIndex = addCommonGrid(grid, formFields, dob, gender);
+        grid.add(new Label("Registration No:"), 0, rowIndex);
+        grid.add(txtReg, 1, rowIndex++);
+        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, rowIndex);
+        grid.add(txtPassword, 1, rowIndex);
 
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(button -> {
             if (button.getButtonData() != ButtonBar.ButtonData.OK_DONE) {
                 return null;
             }
-            String password = value(txtPassword);
-            if (!edit && password.isBlank()) {
-                throw new IllegalArgumentException("Password is required.");
-            }
-            return new UserManagementRow(
-                    edit ? existing.getUserId() : required(txtReg, "Registration No"),
-                    required(common[0], "First name"),
-                    required(common[1], "Last name"),
-                    required(common[2], "Email"),
-                    value(common[3]),
-                    value(common[4]),
-                    dob.getValue(),
-                    gender.getValue(),
-                    UserRole.ADMIN.value(),
-                    required(txtReg, "Registration No"),
-                    password,
-                    null,
-                    null,
-                    null,
-                    null,
-                    value(common[5])
-            );
+            return buildAdminRow(existing, edit, formFields, dob, gender, txtReg, txtPassword);
         });
 
         return dialog.showAndWait().orElse(null);
@@ -334,7 +330,7 @@ public class ManageUsersController implements Initializable {
         boolean edit = existing != null;
         Dialog<UserManagementRow> dialog = baseDialog(edit ? "Edit Lecturer" : "Add Lecturer", edit);
 
-        TextField[] common = commonFields(existing);
+        CommonUserFields formFields = createCommonFields(existing);
         DatePicker dob = dateOfBirthPicker(existing);
         ComboBox<String> gender = genderBox(existing);
 
@@ -347,43 +343,22 @@ public class ManageUsersController implements Initializable {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        int r = addCommonGrid(grid, common, dob, gender);
-        grid.add(new Label("Registration No:"), 0, r);
-        grid.add(txtReg, 1, r++);
-        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, r);
-        grid.add(txtPassword, 1, r++);
-        grid.add(new Label("Department:"), 0, r);
-        grid.add(txtDepartment, 1, r++);
-        grid.add(new Label("Position:"), 0, r);
-        grid.add(txtPosition, 1, r);
+        int rowIndex = addCommonGrid(grid, formFields, dob, gender);
+        grid.add(new Label("Registration No:"), 0, rowIndex);
+        grid.add(txtReg, 1, rowIndex++);
+        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, rowIndex);
+        grid.add(txtPassword, 1, rowIndex++);
+        grid.add(new Label("Department:"), 0, rowIndex);
+        grid.add(txtDepartment, 1, rowIndex++);
+        grid.add(new Label("Position:"), 0, rowIndex);
+        grid.add(txtPosition, 1, rowIndex);
 
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(button -> {
             if (button.getButtonData() != ButtonBar.ButtonData.OK_DONE) {
                 return null;
             }
-            String password = value(txtPassword);
-            if (!edit && password.isBlank()) {
-                throw new IllegalArgumentException("Password is required.");
-            }
-            return new UserManagementRow(
-                    edit ? existing.getUserId() : required(txtReg, "Registration No"),
-                    required(common[0], "First name"),
-                    required(common[1], "Last name"),
-                    required(common[2], "Email"),
-                    value(common[3]),
-                    value(common[4]),
-                    dob.getValue(),
-                    gender.getValue(),
-                    UserRole.LECTURER.value(),
-                    required(txtReg, "Registration No"),
-                    password,
-                    required(txtDepartment, "Department"),
-                    null,
-                    null,
-                    required(txtPosition, "Position"),
-                    value(common[5])
-            );
+            return buildLecturerRow(existing, edit, formFields, dob, gender, txtReg, txtPassword, txtDepartment, txtPosition);
         });
 
         return dialog.showAndWait().orElse(null);
@@ -393,7 +368,7 @@ public class ManageUsersController implements Initializable {
         boolean edit = existing != null;
         Dialog<UserManagementRow> dialog = baseDialog(edit ? "Edit Student" : "Add Student", edit);
 
-        TextField[] common = commonFields(existing);
+        CommonUserFields formFields = createCommonFields(existing);
         DatePicker dob = dateOfBirthPicker(existing);
         ComboBox<String> gender = genderBox(existing);
 
@@ -409,45 +384,24 @@ public class ManageUsersController implements Initializable {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        int r = addCommonGrid(grid, common, dob, gender);
-        grid.add(new Label("Registration No:"), 0, r);
-        grid.add(txtReg, 1, r++);
-        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, r);
-        grid.add(txtPassword, 1, r++);
-        grid.add(new Label("Department:"), 0, r);
-        grid.add(txtDepartment, 1, r++);
-        grid.add(new Label("GPA (optional):"), 0, r);
-        grid.add(txtGpa, 1, r++);
-        grid.add(new Label("Status:"), 0, r);
-        grid.add(cmbStatus, 1, r);
+        int rowIndex = addCommonGrid(grid, formFields, dob, gender);
+        grid.add(new Label("Registration No:"), 0, rowIndex);
+        grid.add(txtReg, 1, rowIndex++);
+        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, rowIndex);
+        grid.add(txtPassword, 1, rowIndex++);
+        grid.add(new Label("Department:"), 0, rowIndex);
+        grid.add(txtDepartment, 1, rowIndex++);
+        grid.add(new Label("GPA (optional):"), 0, rowIndex);
+        grid.add(txtGpa, 1, rowIndex++);
+        grid.add(new Label("Status:"), 0, rowIndex);
+        grid.add(cmbStatus, 1, rowIndex);
 
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(button -> {
             if (button.getButtonData() != ButtonBar.ButtonData.OK_DONE) {
                 return null;
             }
-            String password = value(txtPassword);
-            if (!edit && password.isBlank()) {
-                throw new IllegalArgumentException("Password is required.");
-            }
-            return new UserManagementRow(
-                    edit ? existing.getUserId() : required(txtReg, "Registration No"),
-                    required(common[0], "First name"),
-                    required(common[1], "Last name"),
-                    required(common[2], "Email"),
-                    value(common[3]),
-                    value(common[4]),
-                    dob.getValue(),
-                    gender.getValue(),
-                    UserRole.STUDENT.value(),
-                    required(txtReg, "Registration No"),
-                    password,
-                    required(txtDepartment, "Department"),
-                    parseOptionalDouble(txtGpa),
-                    requiredCombo(cmbStatus, "Status"),
-                    null,
-                    value(common[5])
-            );
+            return buildStudentRow(existing, edit, formFields, dob, gender, txtReg, txtPassword, txtDepartment, txtGpa, cmbStatus);
         });
 
         return dialog.showAndWait().orElse(null);
@@ -457,7 +411,7 @@ public class ManageUsersController implements Initializable {
         boolean edit = existing != null;
         Dialog<UserManagementRow> dialog = baseDialog(edit ? "Edit Technical Officer" : "Add Technical Officer", edit);
 
-        TextField[] common = commonFields(existing);
+        CommonUserFields formFields = createCommonFields(existing);
         DatePicker dob = dateOfBirthPicker(existing);
         ComboBox<String> gender = genderBox(existing);
 
@@ -468,39 +422,18 @@ public class ManageUsersController implements Initializable {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        int r = addCommonGrid(grid, common, dob, gender);
-        grid.add(new Label("Registration No:"), 0, r);
-        grid.add(txtReg, 1, r++);
-        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, r);
-        grid.add(txtPassword, 1, r);
+        int rowIndex = addCommonGrid(grid, formFields, dob, gender);
+        grid.add(new Label("Registration No:"), 0, rowIndex);
+        grid.add(txtReg, 1, rowIndex++);
+        grid.add(new Label(edit ? "New Password (optional):" : "Password:"), 0, rowIndex);
+        grid.add(txtPassword, 1, rowIndex);
 
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(button -> {
             if (button.getButtonData() != ButtonBar.ButtonData.OK_DONE) {
                 return null;
             }
-            String password = value(txtPassword);
-            if (!edit && password.isBlank()) {
-                throw new IllegalArgumentException("Password is required.");
-            }
-            return new UserManagementRow(
-                    edit ? existing.getUserId() : required(txtReg, "Registration No"),
-                    required(common[0], "First name"),
-                    required(common[1], "Last name"),
-                    required(common[2], "Email"),
-                    value(common[3]),
-                    value(common[4]),
-                    dob.getValue(),
-                    gender.getValue(),
-                    UserRole.TECHNICAL_OFFICER.value(),
-                    required(txtReg, "Registration No"),
-                    password,
-                    null,
-                    null,
-                    null,
-                    null,
-                    value(common[5])
-            );
+            return buildTechnicalOfficerRow(existing, edit, formFields, dob, gender, txtReg, txtPassword);
         });
 
         return dialog.showAndWait().orElse(null);
@@ -515,14 +448,15 @@ public class ManageUsersController implements Initializable {
         return dialog;
     }
 
-    private TextField[] commonFields(UserManagementRow existing) {
-        TextField txtFirstName = new TextField(existing == null ? "" : value(existing.getFirstName()));
-        TextField txtLastName = new TextField(existing == null ? "" : value(existing.getLastName()));
-        TextField txtEmail = new TextField(existing == null ? "" : value(existing.getEmail()));
-        TextField txtAddress = new TextField(existing == null ? "" : value(existing.getAddress()));
-        TextField txtPhone = new TextField(existing == null ? "" : value(existing.getPhoneNumber()));
-        TextField txtImagePath = new TextField(existing == null ? "" : value(existing.getProfileImagePath()));
-        return new TextField[]{txtFirstName, txtLastName, txtEmail, txtAddress, txtPhone, txtImagePath};
+    private CommonUserFields createCommonFields(UserManagementRow existing) {
+        CommonUserFields fields = new CommonUserFields();
+        fields.firstNameField = new TextField(existing == null ? "" : value(existing.getFirstName()));
+        fields.lastNameField = new TextField(existing == null ? "" : value(existing.getLastName()));
+        fields.emailField = new TextField(existing == null ? "" : value(existing.getEmail()));
+        fields.addressField = new TextField(existing == null ? "" : value(existing.getAddress()));
+        fields.phoneField = new TextField(existing == null ? "" : value(existing.getPhoneNumber()));
+        fields.imagePathField = new TextField(existing == null ? "" : value(existing.getProfileImagePath()));
+        return fields;
     }
 
     private DatePicker dateOfBirthPicker(UserManagementRow existing) {
@@ -536,29 +470,131 @@ public class ManageUsersController implements Initializable {
         return cmbGender;
     }
 
-    private int addCommonGrid(GridPane grid, TextField[] common, DatePicker dob, ComboBox<String> gender) {
-        int r = 0;
-        grid.add(new Label("First Name:"), 0, r);
-        grid.add(common[0], 1, r++);
-        grid.add(new Label("Last Name:"), 0, r);
-        grid.add(common[1], 1, r++);
-        grid.add(new Label("Email:"), 0, r);
-        grid.add(common[2], 1, r++);
-        grid.add(new Label("Address:"), 0, r);
-        grid.add(common[3], 1, r++);
-        grid.add(new Label("Phone:"), 0, r);
-        grid.add(common[4], 1, r++);
-        grid.add(new Label("Profile Image:"), 0, r);
+    private int addCommonGrid(GridPane grid, CommonUserFields fields, DatePicker dob, ComboBox<String> gender) {
+        int rowIndex = 0;
+        grid.add(new Label("First Name:"), 0, rowIndex);
+        grid.add(fields.firstNameField, 1, rowIndex++);
+        grid.add(new Label("Last Name:"), 0, rowIndex);
+        grid.add(fields.lastNameField, 1, rowIndex++);
+        grid.add(new Label("Email:"), 0, rowIndex);
+        grid.add(fields.emailField, 1, rowIndex++);
+        grid.add(new Label("Address:"), 0, rowIndex);
+        grid.add(fields.addressField, 1, rowIndex++);
+        grid.add(new Label("Phone:"), 0, rowIndex);
+        grid.add(fields.phoneField, 1, rowIndex++);
+        grid.add(new Label("Profile Image:"), 0, rowIndex);
         HBox imageBox = new HBox(8.0);
         Button btnBrowseImage = new Button("Browse");
-        btnBrowseImage.setOnAction(event -> chooseImageFile(common[5]));
-        imageBox.getChildren().addAll(common[5], btnBrowseImage);
-        grid.add(imageBox, 1, r++);
-        grid.add(new Label("Date of Birth:"), 0, r);
-        grid.add(dob, 1, r++);
-        grid.add(new Label("Gender:"), 0, r);
-        grid.add(gender, 1, r++);
-        return r;
+        btnBrowseImage.setOnAction(event -> chooseImageFile(fields.imagePathField));
+        imageBox.getChildren().addAll(fields.imagePathField, btnBrowseImage);
+        grid.add(imageBox, 1, rowIndex++);
+        grid.add(new Label("Date of Birth:"), 0, rowIndex);
+        grid.add(dob, 1, rowIndex++);
+        grid.add(new Label("Gender:"), 0, rowIndex);
+        grid.add(gender, 1, rowIndex++);
+        return rowIndex;
+    }
+
+    private UserManagementRow buildAdminRow(UserManagementRow existing, boolean edit, CommonUserFields fields,
+                                            DatePicker dob, ComboBox<String> gender, TextField txtReg, TextField txtPassword) {
+        String password = requirePasswordForCreate(edit, txtPassword);
+        return new UserManagementRow(
+                edit ? existing.getUserId() : required(txtReg, "Registration No"),
+                required(fields.firstNameField, "First name"),
+                required(fields.lastNameField, "Last name"),
+                required(fields.emailField, "Email"),
+                value(fields.addressField),
+                value(fields.phoneField),
+                dob.getValue(),
+                gender.getValue(),
+                UserRole.ADMIN.getValue(),
+                required(txtReg, "Registration No"),
+                password,
+                null,
+                null,
+                null,
+                null,
+                value(fields.imagePathField)
+        );
+    }
+
+    private UserManagementRow buildLecturerRow(UserManagementRow existing, boolean edit, CommonUserFields fields,
+                                               DatePicker dob, ComboBox<String> gender, TextField txtReg, TextField txtPassword,
+                                               TextField txtDepartment, TextField txtPosition) {
+        String password = requirePasswordForCreate(edit, txtPassword);
+        return new UserManagementRow(
+                edit ? existing.getUserId() : required(txtReg, "Registration No"),
+                required(fields.firstNameField, "First name"),
+                required(fields.lastNameField, "Last name"),
+                required(fields.emailField, "Email"),
+                value(fields.addressField),
+                value(fields.phoneField),
+                dob.getValue(),
+                gender.getValue(),
+                UserRole.LECTURER.getValue(),
+                required(txtReg, "Registration No"),
+                password,
+                required(txtDepartment, "Department"),
+                null,
+                null,
+                required(txtPosition, "Position"),
+                value(fields.imagePathField)
+        );
+    }
+
+    private UserManagementRow buildStudentRow(UserManagementRow existing, boolean edit, CommonUserFields fields,
+                                              DatePicker dob, ComboBox<String> gender, TextField txtReg, TextField txtPassword,
+                                              TextField txtDepartment, TextField txtGpa, ComboBox<String> cmbStatus) {
+        String password = requirePasswordForCreate(edit, txtPassword);
+        return new UserManagementRow(
+                edit ? existing.getUserId() : required(txtReg, "Registration No"),
+                required(fields.firstNameField, "First name"),
+                required(fields.lastNameField, "Last name"),
+                required(fields.emailField, "Email"),
+                value(fields.addressField),
+                value(fields.phoneField),
+                dob.getValue(),
+                gender.getValue(),
+                UserRole.STUDENT.getValue(),
+                required(txtReg, "Registration No"),
+                password,
+                required(txtDepartment, "Department"),
+                parseOptionalDouble(txtGpa),
+                requiredCombo(cmbStatus, "Status"),
+                null,
+                value(fields.imagePathField)
+        );
+    }
+
+    private UserManagementRow buildTechnicalOfficerRow(UserManagementRow existing, boolean edit, CommonUserFields fields,
+                                                       DatePicker dob, ComboBox<String> gender, TextField txtReg, TextField txtPassword) {
+        String password = requirePasswordForCreate(edit, txtPassword);
+        return new UserManagementRow(
+                edit ? existing.getUserId() : required(txtReg, "Registration No"),
+                required(fields.firstNameField, "First name"),
+                required(fields.lastNameField, "Last name"),
+                required(fields.emailField, "Email"),
+                value(fields.addressField),
+                value(fields.phoneField),
+                dob.getValue(),
+                gender.getValue(),
+                UserRole.TECHNICAL_OFFICER.getValue(),
+                required(txtReg, "Registration No"),
+                password,
+                null,
+                null,
+                null,
+                null,
+                value(fields.imagePathField)
+        );
+    }
+
+    private String requirePasswordForCreate(boolean edit, TextField txtPassword) {
+        String password = value(txtPassword);
+        if (!edit && password.isBlank()) {
+            throw new IllegalArgumentException("Password is required.");
+        }
+        return password;
     }
 
     private void chooseImageFile(TextField targetField) {
@@ -693,5 +729,14 @@ public class ManageUsersController implements Initializable {
         alert.setHeaderText("Database Error");
         alert.setContentText(message + "\n" + e.getMessage());
         alert.showAndWait();
+    }
+
+    private static class CommonUserFields {
+        private TextField firstNameField;
+        private TextField lastNameField;
+        private TextField emailField;
+        private TextField addressField;
+        private TextField phoneField;
+        private TextField imagePathField;
     }
 }

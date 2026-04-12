@@ -4,6 +4,9 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalDate;
 
+/**
+ * Simple notice model used by the notice table and notice forms.
+ */
 public class Notice {
     private int noticeId;
     private String title;
@@ -61,10 +64,6 @@ public class Notice {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-
-    public void publishNotice(){}
-    public void editNotice(){}
-    public void removeNotice(){}
 
     public SimpleStringProperty noticeIdProperty() {
         return new SimpleStringProperty(String.valueOf(noticeId));

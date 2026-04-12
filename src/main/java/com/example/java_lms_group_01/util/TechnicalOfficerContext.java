@@ -1,5 +1,8 @@
 package com.example.java_lms_group_01.util;
 
+/**
+ * Stores the registration number of the technical officer who is currently logged in.
+ */
 public class TechnicalOfficerContext {
 
     private static String registrationNo;

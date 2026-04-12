@@ -9,7 +9,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Shows the courses that belong to the logged-in student.
+ */
 public class StudentCoursePageController {
 
     @FXML
@@ -53,14 +58,21 @@ public class StudentCoursePageController {
         }
 
         try {
-            var rows = studentRepository.findCoursesByStudent(regNo).stream()
-                    .map(r -> {
-                        Course course = new Course(r.courseCode(), r.name(), r.lecturer(), r.department(), r.semester(),
-                                Integer.parseInt(r.credit()), r.type());
-                        course.setEnrollmentStatus(r.enrollmentStatus());
-                        return course;
-                    })
-                    .toList();
+            List<StudentRepository.CourseRecord> recordList = studentRepository.findCoursesByStudent(regNo);
+            List<Course> rows = new ArrayList<>();
+            for (StudentRepository.CourseRecord record : recordList) {
+                Course course = new Course(
+                        record.getCourseCode(),
+                        record.getName(),
+                        record.getLecturer(),
+                        record.getDepartment(),
+                        record.getSemester(),
+                        Integer.parseInt(record.getCredit()),
+                        record.getType()
+                );
+                course.setEnrollmentStatus(record.getEnrollmentStatus());
+                rows.add(course);
+            }
             tblCourses.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load course details.", e);

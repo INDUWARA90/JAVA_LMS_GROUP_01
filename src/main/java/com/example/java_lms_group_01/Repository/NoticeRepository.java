@@ -12,11 +12,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Database access for notices created by the system.
+ */
 public class NoticeRepository {
 
     private static final String BASE_SELECT =
             "SELECT notice_id, notice_title, notice_content, publishDate, createdBy FROM notice";
 
+    // Return every notice ordered by newest first.
     public List<Notice> findAll() throws SQLException {
         String sql = BASE_SELECT + " ORDER BY publishDate DESC, notice_id DESC";
         Connection connection = DBConnection.getInstance().getConnection();

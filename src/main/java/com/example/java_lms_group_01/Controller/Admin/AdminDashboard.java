@@ -1,4 +1,4 @@
-package com.example.java_lms_group_01.Controller.AdminDashboard;
+package com.example.java_lms_group_01.Controller.Admin;
 
 import com.example.java_lms_group_01.Repository.UserImageRepository;
 import com.example.java_lms_group_01.util.ProfileImageUtil;
@@ -20,6 +20,10 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * Main dashboard controller for the admin role.
+ * The navigation buttons load admin pages into the center content area.
+ */
 public class AdminDashboard {
 
     @FXML
@@ -102,9 +106,9 @@ public class AdminDashboard {
 
     }
 
+    // Replace the current content area with the selected admin page.
     private void loadSubView(String fxmlPath) {
         try {
-            // 1. Get the URL starting from the root of the resources
             URL resource = getClass().getResource(fxmlPath);
 
             if (resource == null) {
@@ -112,14 +116,11 @@ public class AdminDashboard {
                 return;
             }
 
-            // 2. Load the FXML
             FXMLLoader loader = new FXMLLoader(resource);
             Parent node = loader.load();
 
-            // 3. Clear and Inject into your AnchorPane (right side)
             contentArea.getChildren().setAll(node);
 
-            // 4. Anchor it so it fits the whole area
             AnchorPane.setTopAnchor(node, 0.0);
             AnchorPane.setBottomAnchor(node, 0.0);
             AnchorPane.setLeftAnchor(node, 0.0);

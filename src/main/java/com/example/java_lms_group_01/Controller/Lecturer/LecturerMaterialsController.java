@@ -12,7 +12,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Lets a lecturer manage course materials for the courses assigned to that lecturer.
+ */
 public class LecturerMaterialsController {
 
     @FXML
@@ -23,8 +28,6 @@ public class LecturerMaterialsController {
     private TextField txtPath;
     @FXML
     private ComboBox<String> cmbMaterialType;
-    @FXML
-    private TextField txtSearch;
     @FXML
     private TableView<Material> tblMaterials;
     @FXML
@@ -48,7 +51,7 @@ public class LecturerMaterialsController {
         colMaterialName.setCellValueFactory(d -> d.getValue().nameProperty());
         colPath.setCellValueFactory(d -> d.getValue().pathProperty());
         colType.setCellValueFactory(d -> d.getValue().typeProperty());
-        loadMaterials(null);
+        loadMaterials();
 
         tblMaterials.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, row) -> {
             if (row == null) {
@@ -72,7 +75,7 @@ public class LecturerMaterialsController {
                 showWarn("You can add materials only for courses assigned to you.");
                 return;
             }
-            loadMaterials(txtSearch.getText());
+            loadMaterials();
             clearForm();
         } catch (Exception e) {
             showError("Failed to add material.", e);
@@ -95,7 +98,7 @@ public class LecturerMaterialsController {
                 showWarn("You can update only materials for your own courses.");
                 return;
             }
-            loadMaterials(txtSearch.getText());
+            loadMaterials();
         } catch (Exception e) {
             showError("Failed to update material.", e);
         }
@@ -114,22 +117,11 @@ public class LecturerMaterialsController {
                 showWarn("You can delete only materials for your own courses.");
                 return;
             }
-            loadMaterials(txtSearch.getText());
+            loadMaterials();
             clearForm();
         } catch (Exception e) {
             showError("Failed to delete material.", e);
         }
-    }
-
-    @FXML
-    private void searchMaterials() {
-        loadMaterials(txtSearch.getText());
-    }
-
-    @FXML
-    private void refreshMaterials() {
-        txtSearch.clear();
-        loadMaterials(null);
     }
 
     @FXML
@@ -141,11 +133,20 @@ public class LecturerMaterialsController {
         tblMaterials.getSelectionModel().clearSelection();
     }
 
-    private void loadMaterials(String keyword) {
+    private void loadMaterials() {
         try {
-            var rows = lecturerRepository.findMaterialsByLecturer(currentLecturer(), keyword).stream()
-                    .map(r -> new Material(r.materialId(), r.courseCode(), r.name(), r.path(), r.type()))
-                    .toList();
+            List<LecturerRepository.MaterialRecord> recordList =
+                    lecturerRepository.findMaterialsByLecturer(currentLecturer(), null);
+            List<Material> rows = new ArrayList<>();
+            for (LecturerRepository.MaterialRecord record : recordList) {
+                rows.add(new Material(
+                        record.getMaterialId(),
+                        record.getCourseCode(),
+                        record.getName(),
+                        record.getPath(),
+                        record.getType()
+                ));
+            }
             tblMaterials.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load materials.", e);

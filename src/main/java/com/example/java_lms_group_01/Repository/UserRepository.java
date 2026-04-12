@@ -3,7 +3,6 @@ package com.example.java_lms_group_01.Repository;
 import com.example.java_lms_group_01.model.UserManagementRow;
 import com.example.java_lms_group_01.util.DBConnection;
 import com.example.java_lms_group_01.util.PasswordUtil;
-import com.example.java_lms_group_01.Repository.UserImageRepository;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,10 +13,15 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Database access used by the admin user-management screens.
+ * It works with both the common users table and the role-specific tables.
+ */
 public class UserRepository {
 
     private final UserImageRepository userImageRepository = new UserImageRepository();
 
+    // Read all admin users.
     public List<UserManagementRow> findAdmins() throws SQLException {
         String sql = """
                 SELECT u.user_id, u.firstName, u.lastName, u.email, u.address, u.phoneNumber, u.dateOfBirth, u.gender,
@@ -68,43 +72,111 @@ public class UserRepository {
 
     public boolean createAdmin(UserManagementRow row) throws SQLException {
         String roleSql = "INSERT INTO admin (registrationNo, password) VALUES (?, ?)";
-        return createWithRole(row, roleSql, stmt -> {
-            stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
-            stmt.setString(2, hashRequiredPassword(row.getPassword()));
-        });
+        Connection connection = DBConnection.getInstance().getConnection();
+        boolean originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try {
+            insertUser(connection, row);
+            try (PreparedStatement stmt = connection.prepareStatement(roleSql)) {
+                stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
+                stmt.setString(2, hashRequiredPassword(row.getPassword()));
+                stmt.executeUpdate();
+            }
+            userImageRepository.upsertImagePath(connection, requiredText(row.getRegistrationNo(), "Registration No"), row.getProfileImagePath());
+            connection.commit();
+            return true;
+        } catch (Exception e) {
+            connection.rollback();
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            throw new SQLException(e.getMessage(), e);
+        } finally {
+            connection.setAutoCommit(originalAutoCommit);
+        }
     }
 
     public boolean createLecturer(UserManagementRow row) throws SQLException {
         String roleSql = "INSERT INTO lecturer (registrationNo, password, department, position) VALUES (?, ?, ?, ?)";
-        return createWithRole(row, roleSql, stmt -> {
-            stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
-            stmt.setString(2, hashRequiredPassword(row.getPassword()));
-            stmt.setString(3, requiredText(row.getDepartment(), "Department"));
-            stmt.setString(4, requiredText(row.getPosition(), "Position"));
-        });
+        Connection connection = DBConnection.getInstance().getConnection();
+        boolean originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try {
+            insertUser(connection, row);
+            try (PreparedStatement stmt = connection.prepareStatement(roleSql)) {
+                stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
+                stmt.setString(2, hashRequiredPassword(row.getPassword()));
+                stmt.setString(3, requiredText(row.getDepartment(), "Department"));
+                stmt.setString(4, requiredText(row.getPosition(), "Position"));
+                stmt.executeUpdate();
+            }
+            userImageRepository.upsertImagePath(connection, requiredText(row.getRegistrationNo(), "Registration No"), row.getProfileImagePath());
+            connection.commit();
+            return true;
+        } catch (Exception e) {
+            connection.rollback();
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            throw new SQLException(e.getMessage(), e);
+        } finally {
+            connection.setAutoCommit(originalAutoCommit);
+        }
     }
 
     public boolean createStudent(UserManagementRow row) throws SQLException {
         String roleSql = "INSERT INTO student (registrationNo, password, department, GPA, status) VALUES (?, ?, ?, ?, ?)";
-        return createWithRole(row, roleSql, stmt -> {
-            stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
-            stmt.setString(2, hashRequiredPassword(row.getPassword()));
-            stmt.setString(3, requiredText(row.getDepartment(), "Department"));
-            if (row.getGpa() == null) {
-                stmt.setNull(4, Types.DECIMAL);
-            } else {
-                stmt.setDouble(4, row.getGpa());
+        Connection connection = DBConnection.getInstance().getConnection();
+        boolean originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try {
+            insertUser(connection, row);
+            try (PreparedStatement stmt = connection.prepareStatement(roleSql)) {
+                stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
+                stmt.setString(2, hashRequiredPassword(row.getPassword()));
+                stmt.setString(3, requiredText(row.getDepartment(), "Department"));
+                setNullableDecimal(stmt, 4, row.getGpa());
+                stmt.setString(5, requiredText(row.getStatus(), "Status"));
+                stmt.executeUpdate();
             }
-            stmt.setString(5, requiredText(row.getStatus(), "Status"));
-        });
+            userImageRepository.upsertImagePath(connection, requiredText(row.getRegistrationNo(), "Registration No"), row.getProfileImagePath());
+            connection.commit();
+            return true;
+        } catch (Exception e) {
+            connection.rollback();
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            throw new SQLException(e.getMessage(), e);
+        } finally {
+            connection.setAutoCommit(originalAutoCommit);
+        }
     }
 
     public boolean createTechnicalOfficer(UserManagementRow row) throws SQLException {
         String roleSql = "INSERT INTO tech_officer (registrationNo, password) VALUES (?, ?)";
-        return createWithRole(row, roleSql, stmt -> {
-            stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
-            stmt.setString(2, hashRequiredPassword(row.getPassword()));
-        });
+        Connection connection = DBConnection.getInstance().getConnection();
+        boolean originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try {
+            insertUser(connection, row);
+            try (PreparedStatement stmt = connection.prepareStatement(roleSql)) {
+                stmt.setString(1, requiredText(row.getRegistrationNo(), "Registration No"));
+                stmt.setString(2, hashRequiredPassword(row.getPassword()));
+                stmt.executeUpdate();
+            }
+            userImageRepository.upsertImagePath(connection, requiredText(row.getRegistrationNo(), "Registration No"), row.getProfileImagePath());
+            connection.commit();
+            return true;
+        } catch (Exception e) {
+            connection.rollback();
+            if (e instanceof SQLException) {
+                throw (SQLException) e;
+            }
+            throw new SQLException(e.getMessage(), e);
+        } finally {
+            connection.setAutoCommit(originalAutoCommit);
+        }
     }
 
     public boolean updateAdmin(UserManagementRow row) throws SQLException {
@@ -143,12 +215,16 @@ public class UserRepository {
         try {
             updateUser(connection, row);
 
-            String roleSql = row.getPassword() == null || row.getPassword().trim().isEmpty()
-                    ? "UPDATE lecturer SET department = ?, position = ? WHERE registrationNo = ?"
-                    : "UPDATE lecturer SET password = ?, department = ?, position = ? WHERE registrationNo = ?";
+            boolean updatePassword = hasText(row.getPassword());
+            String roleSql;
+            if (updatePassword) {
+                roleSql = "UPDATE lecturer SET password = ?, department = ?, position = ? WHERE registrationNo = ?";
+            } else {
+                roleSql = "UPDATE lecturer SET department = ?, position = ? WHERE registrationNo = ?";
+            }
 
             try (PreparedStatement stmt = connection.prepareStatement(roleSql)) {
-                if (row.getPassword() == null || row.getPassword().trim().isEmpty()) {
+                if (!updatePassword) {
                     stmt.setString(1, requiredText(row.getDepartment(), "Department"));
                     stmt.setString(2, requiredText(row.getPosition(), "Position"));
                     stmt.setString(3, requiredText(row.getRegistrationNo(), "Registration No"));
@@ -181,28 +257,24 @@ public class UserRepository {
         try {
             updateUser(connection, row);
 
-            String roleSql = row.getPassword() == null || row.getPassword().trim().isEmpty()
-                    ? "UPDATE student SET department = ?, GPA = ?, status = ? WHERE registrationNo = ?"
-                    : "UPDATE student SET password = ?, department = ?, GPA = ?, status = ? WHERE registrationNo = ?";
+            boolean updatePassword = hasText(row.getPassword());
+            String roleSql;
+            if (updatePassword) {
+                roleSql = "UPDATE student SET password = ?, department = ?, GPA = ?, status = ? WHERE registrationNo = ?";
+            } else {
+                roleSql = "UPDATE student SET department = ?, GPA = ?, status = ? WHERE registrationNo = ?";
+            }
 
             try (PreparedStatement stmt = connection.prepareStatement(roleSql)) {
-                if (row.getPassword() == null || row.getPassword().trim().isEmpty()) {
+                if (!updatePassword) {
                     stmt.setString(1, requiredText(row.getDepartment(), "Department"));
-                    if (row.getGpa() == null) {
-                        stmt.setNull(2, Types.DECIMAL);
-                    } else {
-                        stmt.setDouble(2, row.getGpa());
-                    }
+                    setNullableDecimal(stmt, 2, row.getGpa());
                     stmt.setString(3, requiredText(row.getStatus(), "Status"));
                     stmt.setString(4, requiredText(row.getRegistrationNo(), "Registration No"));
                 } else {
                     stmt.setString(1, PasswordUtil.hashPassword(row.getPassword().trim()));
                     stmt.setString(2, requiredText(row.getDepartment(), "Department"));
-                    if (row.getGpa() == null) {
-                        stmt.setNull(3, Types.DECIMAL);
-                    } else {
-                        stmt.setDouble(3, row.getGpa());
-                    }
+                    setNullableDecimal(stmt, 3, row.getGpa());
                     stmt.setString(4, requiredText(row.getStatus(), "Status"));
                     stmt.setString(5, requiredText(row.getRegistrationNo(), "Registration No"));
                 }
@@ -229,7 +301,7 @@ public class UserRepository {
         try {
             updateUser(connection, row);
 
-            if (row.getPassword() != null && !row.getPassword().trim().isEmpty()) {
+            if (hasText(row.getPassword())) {
                 try (PreparedStatement stmt =
                              connection.prepareStatement("UPDATE tech_officer SET password = ? WHERE registrationNo = ?")) {
                     stmt.setString(1, PasswordUtil.hashPassword(row.getPassword().trim()));
@@ -267,35 +339,11 @@ public class UserRepository {
         return deleteWithRole(userId, "DELETE FROM tech_officer WHERE registrationNo = ?");
     }
 
-    private boolean createWithRole(UserManagementRow row, String roleInsertSql, RoleStatementWriter writer) throws SQLException {
+    private void insertUser(Connection connection, UserManagementRow row) throws SQLException {
         String userSql = "INSERT INTO users (user_id, firstName, lastName, email, address, phoneNumber, dateOfBirth, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        Connection connection = DBConnection.getInstance().getConnection();
-        boolean originalAutoCommit = connection.getAutoCommit();
-        connection.setAutoCommit(false);
-        try {
-            try (PreparedStatement userStmt = connection.prepareStatement(userSql)) {
-                fillUserStatement(userStmt, row, false);
-                userStmt.executeUpdate();
-            }
-
-            try (PreparedStatement roleStmt = connection.prepareStatement(roleInsertSql)) {
-                writer.write(roleStmt);
-                roleStmt.executeUpdate();
-            }
-
-            userImageRepository.upsertImagePath(connection, requiredText(row.getRegistrationNo(), "Registration No"), row.getProfileImagePath());
-
-            connection.commit();
-            return true;
-        } catch (Exception e) {
-            connection.rollback();
-            if (e instanceof SQLException) {
-                throw (SQLException) e;
-            }
-            throw new SQLException(e.getMessage(), e);
-        } finally {
-            connection.setAutoCommit(originalAutoCommit);
+        try (PreparedStatement userStmt = connection.prepareStatement(userSql)) {
+            fillUserStatement(userStmt, row, false);
+            userStmt.executeUpdate();
         }
     }
 
@@ -348,11 +396,7 @@ public class UserRepository {
             stmt.setString(4, requiredText(row.getEmail(), "Email"));
             stmt.setString(5, emptyToNull(row.getAddress()));
             stmt.setString(6, emptyToNull(row.getPhoneNumber()));
-            if (row.getDateOfBirth() == null) {
-                stmt.setNull(7, Types.DATE);
-            } else {
-                stmt.setDate(7, Date.valueOf(row.getDateOfBirth()));
-            }
+            setNullableDate(stmt, 7, row.getDateOfBirth());
             stmt.setString(8, emptyToNull(row.getGender()));
             return;
         }
@@ -362,11 +406,7 @@ public class UserRepository {
         stmt.setString(3, requiredText(row.getEmail(), "Email"));
         stmt.setString(4, emptyToNull(row.getAddress()));
         stmt.setString(5, emptyToNull(row.getPhoneNumber()));
-        if (row.getDateOfBirth() == null) {
-            stmt.setNull(6, Types.DATE);
-        } else {
-            stmt.setDate(6, Date.valueOf(row.getDateOfBirth()));
-        }
+        setNullableDate(stmt, 6, row.getDateOfBirth());
         stmt.setString(7, emptyToNull(row.getGender()));
         stmt.setString(8, userId);
     }
@@ -423,16 +463,31 @@ public class UserRepository {
         return trimmed.isEmpty() ? null : trimmed;
     }
 
+    private boolean hasText(String text) {
+        return text != null && !text.trim().isEmpty();
+    }
+
+    private void setNullableDecimal(PreparedStatement statement, int index, Double value) throws SQLException {
+        if (value == null) {
+            statement.setNull(index, Types.DECIMAL);
+        } else {
+            statement.setDouble(index, value);
+        }
+    }
+
+    private void setNullableDate(PreparedStatement statement, int index, java.time.LocalDate value) throws SQLException {
+        if (value == null) {
+            statement.setNull(index, Types.DATE);
+        } else {
+            statement.setDate(index, Date.valueOf(value));
+        }
+    }
+
     private String hashRequiredPassword(String rawPassword) {
         return PasswordUtil.hashPassword(requiredText(rawPassword, "Password"));
     }
 
     private String userId(UserManagementRow row) {
         return requiredText(row.getRegistrationNo(), "Registration No");
-    }
-
-    @FunctionalInterface
-    private interface RoleStatementWriter {
-        void write(PreparedStatement stmt) throws SQLException;
     }
 }

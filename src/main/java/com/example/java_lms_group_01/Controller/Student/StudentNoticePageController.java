@@ -9,32 +9,28 @@ import javafx.scene.control.TableView;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Shows published notices for the logged-in student.
+ */
 public class StudentNoticePageController {
 
     @FXML
     private TableView<Notice> tblNotices;
-    @FXML
-    private TableColumn<Notice, String> colNoticeId;
     @FXML
     private TableColumn<Notice, String> colTitle;
     @FXML
     private TableColumn<Notice, String> colContent;
     @FXML
     private TableColumn<Notice, String> colDate;
-    @FXML
-    private TableColumn<Notice, String> colBy;
 
     private final NoticeRepository noticeRepository = new NoticeRepository();
 
     @FXML
     public void initialize() {
-        colNoticeId.setCellValueFactory(d -> d.getValue().noticeIdProperty());
         colTitle.setCellValueFactory(d -> d.getValue().titleProperty());
         colContent.setCellValueFactory(d -> d.getValue().contentProperty());
         colDate.setCellValueFactory(d -> d.getValue().dateProperty());
-        colBy.setCellValueFactory(d -> d.getValue().createdByProperty());
         loadNotices();
     }
 
@@ -45,10 +41,6 @@ public class StudentNoticePageController {
         } catch (SQLException e) {
             showError("Failed to load notices.", e);
         }
-    }
-
-    private String safe(String value) {
-        return value == null ? "" : value;
     }
 
     private void showError(String message, Exception e) {

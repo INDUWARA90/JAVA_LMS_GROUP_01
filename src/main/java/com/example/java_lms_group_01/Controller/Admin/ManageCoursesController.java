@@ -1,4 +1,4 @@
-package com.example.java_lms_group_01.Controller.AdminDashboard;
+package com.example.java_lms_group_01.Controller.Admin;
 
 import com.example.java_lms_group_01.model.users.Admin;
 import com.example.java_lms_group_01.model.Course;
@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Admin screen for viewing, filtering, adding, editing, and deleting courses.
+ */
 public class ManageCoursesController implements Initializable {
 
     @FXML
@@ -101,6 +104,7 @@ public class ManageCoursesController implements Initializable {
         loadCourses(department, txtSearchCourse.getText());
     }
 
+    // Load courses using the current filter values.
     private void loadCourses(String department, String keyword) {
         try {
             List<Course> courses = admin.getCourses(department, keyword);
@@ -191,6 +195,7 @@ public class ManageCoursesController implements Initializable {
         }
     }
 
+    // Open the reusable course form dialog and return the saved course object.
     private Course showCourseForm(Course existingCourse) {
         boolean editMode = existingCourse != null;
         Dialog<Course> dialog = new Dialog<>();

@@ -1,7 +1,6 @@
 package com.example.java_lms_group_01.Controller;
 
-import com.example.java_lms_group_01.Controller.LandingPages.RoleLandingController;
-import com.example.java_lms_group_01.Controller.AdminDashboard.AdminDashboard;
+import com.example.java_lms_group_01.Controller.Admin.AdminDashboard;
 import com.example.java_lms_group_01.Controller.Lecturer.LecturerDashboardController;
 import com.example.java_lms_group_01.Repository.AuthRepository;
 import com.example.java_lms_group_01.Controller.Student.StudentDashboardController;
@@ -19,6 +18,10 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 
+/**
+ * Handles the login screen.
+ * It checks the user credentials and opens the dashboard for the correct role.
+ */
 public class LoginController {
 
     @FXML
@@ -60,28 +63,25 @@ public class LoginController {
         }
     }
 
+    // Open the correct dashboard after a successful login.
     private void loadLandingPage(UserRole role, String registrationNo) throws Exception {
-        String fxmlPath;
-        String title;
+        String fxmlPath = "";
+        String title = "";
 
-        switch (role) {
-            case ADMIN -> {
-                fxmlPath = "/view/Admin/admin_dashboard.fxml";
-                title = "Admin Dashboard";
-            }
-            case LECTURER -> {
-                fxmlPath = "/view/Lecturer/Lecturer_dashboard.fxml";
-                title = "Lecturer Dashboard";
-            }
-            case STUDENT -> {
-                fxmlPath = "/view/Landing/student_landing.fxml";
-                title = "Student Dashboard";
-            }
-            case TECHNICAL_OFFICER -> {
-                fxmlPath = "/view/technicalofficer/technical_officer_dashboard.fxml";
-                title = "Technical Officer Dashboard";
-            }
-            default -> throw new IllegalArgumentException("Unknown role: " + role);
+        if (role == UserRole.ADMIN) {
+            fxmlPath = "/view/Admin/admin_dashboard.fxml";
+            title = "Admin Dashboard";
+        } else if (role == UserRole.LECTURER) {
+            fxmlPath = "/view/Lecturer/Lecturer_dashboard.fxml";
+            title = "Lecturer Dashboard";
+        } else if (role == UserRole.STUDENT) {
+            fxmlPath = "/view/Student/student_landing.fxml";
+            title = "Student Dashboard";
+        } else if (role == UserRole.TECHNICAL_OFFICER) {
+            fxmlPath = "/view/technicalofficer/technical_officer_dashboard.fxml";
+            title = "Technical Officer Dashboard";
+        } else {
+            throw new IllegalArgumentException("Unknown role: " + role);
         }
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -99,9 +99,6 @@ public class LoginController {
         } else if (role == UserRole.TECHNICAL_OFFICER) {
             TechnicalOfficerDashboardController controller = loader.getController();
             controller.setTechnicalOfficerData(registrationNo);
-        } else if (role != UserRole.ADMIN) {
-            RoleLandingController controller = loader.getController();
-            controller.setLandingData(role.value(), registrationNo);
         }
 
         Stage currentStage = (Stage) loginEmail.getScene().getWindow();
@@ -110,6 +107,7 @@ public class LoginController {
         currentStage.centerOnScreen();
     }
 
+    // Small helper for showing pop-up messages.
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

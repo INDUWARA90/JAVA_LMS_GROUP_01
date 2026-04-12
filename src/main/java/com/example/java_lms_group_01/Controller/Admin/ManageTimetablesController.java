@@ -1,4 +1,4 @@
-package com.example.java_lms_group_01.Controller.AdminDashboard;
+package com.example.java_lms_group_01.Controller.Admin;
 
 import com.example.java_lms_group_01.model.users.Admin;
 import com.example.java_lms_group_01.model.Timetable;
@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Admin screen for managing timetable rows.
+ */
 public class ManageTimetablesController implements Initializable {
 
     @FXML
@@ -119,6 +122,7 @@ public class ManageTimetablesController implements Initializable {
         loadTimetables(department, day, txtSearchAcademicYear.getText());
     }
 
+    // Load timetable rows using the current filter values.
     private void loadTimetables(String department, String day, String keyword) {
         try {
             List<Timetable> timetables = admin.getTimetables(department, day, keyword);
@@ -203,6 +207,7 @@ public class ManageTimetablesController implements Initializable {
         }
     }
 
+    // Open a timetable dialog and return a timetable object after validation.
     private Timetable showTimetableDialog(Timetable existing) {
         boolean editMode = existing != null;
 
@@ -366,6 +371,7 @@ public class ManageTimetablesController implements Initializable {
         return value.isBlank() ? null : value;
     }
 
+    // Reload combo box filters and keep the current selection if possible.
     private void refreshFiltersAndTable() {
         String selectedDepartment = cmbFilterDepartment.getValue();
         String selectedDay = cmbFilterSemester.getValue();

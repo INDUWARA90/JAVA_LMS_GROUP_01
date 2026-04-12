@@ -11,7 +11,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Shows attendance eligibility results for students in the lecturer's courses.
+ */
 public class LecturerEligibilityController {
 
     @FXML
@@ -52,25 +57,22 @@ public class LecturerEligibilityController {
         loadEligibility(txtSearch.getText());
     }
 
-    @FXML
-    private void refreshEligibility() {
-        txtSearch.clear();
-        loadEligibility(null);
-    }
-
     private void loadEligibility(String keyword) {
         try {
-            var rows = lecturerRepository.findEligibilityByLecturer(currentLecturer(), keyword).stream()
-                    .map(r -> new Eligibility(
-                            r.studentReg(),
-                            r.studentName(),
-                            r.courseCode(),
-                            String.valueOf(r.eligibleSessions()),
-                            String.valueOf(r.totalSessions()),
-                            AttendanceEligibilityUtil.formatPercentage(r.eligibleSessions(), r.totalSessions()),
-                            AttendanceEligibilityUtil.toEligibilityStatus(r.eligibleSessions(), r.totalSessions())
-                    ))
-                    .toList();
+            List<LecturerRepository.EligibilityRecord> recordList =
+                    lecturerRepository.findEligibilityByLecturer(currentLecturer(), keyword);
+            List<Eligibility> rows = new ArrayList<>();
+            for (LecturerRepository.EligibilityRecord record : recordList) {
+                rows.add(new Eligibility(
+                        record.getStudentReg(),
+                        record.getStudentName(),
+                        record.getCourseCode(),
+                        String.valueOf(record.getEligibleSessions()),
+                        String.valueOf(record.getTotalSessions()),
+                        AttendanceEligibilityUtil.formatPercentage(record.getEligibleSessions(), record.getTotalSessions()),
+                        AttendanceEligibilityUtil.toEligibilityStatus(record.getEligibleSessions(), record.getTotalSessions())
+                ));
+            }
             tblEligibility.getItems().setAll(rows);
         } catch (SQLException e) {
             showError("Failed to load undergraduate eligibility.", e);

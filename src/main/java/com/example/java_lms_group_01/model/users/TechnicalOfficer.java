@@ -2,12 +2,14 @@ package com.example.java_lms_group_01.model.users;
 
 import java.time.LocalDate;
 
-public class TechnicalOfficer extends User{
-    private String registrationNo ;
+/**
+ * Technical officer object with the extra fields needed for login and profile data.
+ */
+public class TechnicalOfficer extends User {
+    private String registrationNo;
     private String password;
 
     public TechnicalOfficer() {
-
     }
 
     public TechnicalOfficer(String userId, String firstName, String lastName, String email, String address, String phoneNumber, LocalDate dateOfBirth, String gender, String registrationNo, String password) {
@@ -36,7 +38,6 @@ public class TechnicalOfficer extends User{
     public String toString() {
         return "TechnicalOfficer{" +
                 "registrationNo='" + registrationNo + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

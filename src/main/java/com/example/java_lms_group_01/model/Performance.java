@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * JavaFX table row that shows calculated marks, grade, GPA, and SGPA.
+ */
 public class Performance {
     private final SimpleStringProperty studentReg;
     private final SimpleStringProperty studentName;
@@ -35,4 +38,14 @@ public class Performance {
     public SimpleStringProperty gradeProperty() { return grade; }
     public SimpleStringProperty gpaProperty() { return gpa; }
     public SimpleStringProperty sgpaProperty() { return sgpa; }
+
+    public String getStudentReg() { return studentReg.get(); }
+    public String getStudentName() { return studentName.get(); }
+    public String getCourseCode() { return courseCode.get(); }
+    public String getCaMarks() { return caMarks.get(); }
+    public String getEndMarks() { return endMarks.get(); }
+    public String getTotalMarks() { return totalMarks.get(); }
+    public String getGrade() { return grade.get(); }
+    public String getGpa() { return gpa.get(); }
+    public String getSgpa() { return sgpa.get(); }
 }

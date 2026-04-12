@@ -6,6 +6,9 @@ import javafx.scene.image.ImageView;
 import java.nio.file.Path;
 import java.util.Locale;
 
+/**
+ * Loads a profile image from a local path or web URL into an ImageView.
+ */
 public final class ProfileImageUtil {
 
     private ProfileImageUtil() {
@@ -23,9 +26,10 @@ public final class ProfileImageUtil {
 
         try {
             String trimmed = imagePath.trim();
-            String source = isWebPath(trimmed) || trimmed.startsWith("file:")
-                    ? trimmed
-                    : Path.of(trimmed).toUri().toString();
+            String source = trimmed;
+            if (!isWebPath(trimmed) && !trimmed.startsWith("file:")) {
+                source = Path.of(trimmed).toUri().toString();
+            }
             Image image = new Image(source, true);
             if (!image.isError()) {
                 imageView.setImage(image);

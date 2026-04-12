@@ -12,11 +12,15 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Database access for timetable records.
+ */
 public class TimetableRepository {
 
     private static final String BASE_SELECT =
             "SELECT time_table_id, department, lec_id, courseCode, admin_id, day, start_time, end_time, session_type FROM timetable";
 
+    // Read timetable rows using optional filters from the admin screen.
     public List<Timetable> findByFilters(String department, String day, String keyword) throws SQLException {
         StringBuilder sql = new StringBuilder(BASE_SELECT + " WHERE 1=1");
         List<Object> params = new ArrayList<>();

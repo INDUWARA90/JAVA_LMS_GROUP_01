@@ -20,6 +20,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main dashboard for technical officers.
+ * It shows summary information and loads working pages into the content area.
+ */
 public class TechnicalOfficerDashboardController {
 
     @FXML
@@ -63,23 +67,23 @@ public class TechnicalOfficerDashboardController {
 
     @FXML
     public void initialize() {
-        lblRegistrationNo.setText("Registration No: -");
-        lblOfficerName.setText("Name: -");
-        lblOfficerEmail.setText("Email: -");
-        lblAttendanceCount.setText("0");
-        lblMedicalCount.setText("0");
-        lblUnreadNoticeCount.setText("0");
-        lblUserId.setText("User ID: -");
-        lblDepartment.setText("Department: -");
-        lblPhone.setText("Phone: -");
-        lblAddress.setText("Address: -");
+        setLabelText(lblRegistrationNo, "Registration No: -");
+        setLabelText(lblOfficerName, "Name: -");
+        setLabelText(lblOfficerEmail, "Email: -");
+        setLabelText(lblAttendanceCount, "0");
+        setLabelText(lblMedicalCount, "0");
+        setLabelText(lblUnreadNoticeCount, "0");
+        setLabelText(lblUserId, "User ID: -");
+        setLabelText(lblDepartment, "Department: -");
+        setLabelText(lblPhone, "Phone: -");
+        setLabelText(lblAddress, "Address: -");
         dashboardHomeNodes.addAll(contentArea.getChildren());
     }
 
     public void setTechnicalOfficerData(String registrationNo) {
         TechnicalOfficerContext.setRegistrationNo(registrationNo);
-        lblRegistrationNo.setText("Registration No: " + registrationNo);
-        lblUserId.setText("User ID: " + registrationNo);
+        setLabelText(lblRegistrationNo, "Registration No: " + registrationNo);
+        setLabelText(lblUserId, "User ID: " + registrationNo);
         loadOfficerDetails(registrationNo);
         loadDashboardCounts();
     }
@@ -133,6 +137,7 @@ public class TechnicalOfficerDashboardController {
         }
     }
 
+    // Load one technical officer sub page into the dashboard content area.
     private void loadContent(String fxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -141,27 +146,30 @@ public class TechnicalOfficerDashboardController {
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Navigation Error");
             alert.setHeaderText(null);
-            alert.setContentText("Cannot open: " + fxmlPath);
+            alert.setContentText("Cannot open: " + fxmlPath + "\n" + rootMessage(e));
             alert.showAndWait();
         }
     }
 
     private void loadOfficerDetails(String registrationNo) {
         try {
-            var profile = userProfileRepository.findTechnicalOfficerProfile(registrationNo);
+            com.example.java_lms_group_01.model.UserManagementRow profile =
+                    userProfileRepository.findTechnicalOfficerProfile(registrationNo);
             if (profile == null) {
                 return;
             }
             String fullName = (raw(profile.getFirstName()) + " " + raw(profile.getLastName())).trim();
-            lblOfficerName.setText("Name: " + (fullName.isBlank() ? "-" : fullName));
-            lblOfficerEmail.setText("Email: " + safe(profile.getEmail()));
-            lblPhone.setText("Phone: " + safe(profile.getPhoneNumber()));
-            lblAddress.setText("Address: " + safe(profile.getAddress()));
-            ProfileImageUtil.loadImage(imgProfile, profile.getProfileImagePath());
+            setLabelText(lblOfficerName, "Name: " + (fullName.isBlank() ? "-" : fullName));
+            setLabelText(lblOfficerEmail, "Email: " + safe(profile.getEmail()));
+            setLabelText(lblPhone, "Phone: " + safe(profile.getPhoneNumber()));
+            setLabelText(lblAddress, "Address: " + safe(profile.getAddress()));
+            if (imgProfile != null) {
+                ProfileImageUtil.loadImage(imgProfile, profile.getProfileImagePath());
+            }
         } catch (SQLException e) {
             showError("Failed to load technical officer details.", e);
         }
@@ -169,13 +177,13 @@ public class TechnicalOfficerDashboardController {
 
     private void loadDashboardCounts() {
         try {
-            lblAttendanceCount.setText(String.valueOf(technicalOfficerRepository.countAttendance()));
-            lblMedicalCount.setText(String.valueOf(technicalOfficerRepository.countMedical()));
-            lblUnreadNoticeCount.setText(String.valueOf(technicalOfficerRepository.countNotices()));
+            setLabelText(lblAttendanceCount, String.valueOf(technicalOfficerRepository.countAttendance()));
+            setLabelText(lblMedicalCount, String.valueOf(technicalOfficerRepository.countMedical()));
+            setLabelText(lblUnreadNoticeCount, String.valueOf(technicalOfficerRepository.countNotices()));
         } catch (SQLException e) {
-            lblAttendanceCount.setText("0");
-            lblMedicalCount.setText("0");
-            lblUnreadNoticeCount.setText("0");
+            setLabelText(lblAttendanceCount, "0");
+            setLabelText(lblMedicalCount, "0");
+            setLabelText(lblUnreadNoticeCount, "0");
         }
     }
 
@@ -193,5 +201,23 @@ public class TechnicalOfficerDashboardController {
 
     private String raw(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private void setLabelText(Label label, String text) {
+        if (label != null) {
+            label.setText(text);
+        }
+    }
+
+    private String rootMessage(Exception exception) {
+        Throwable current = exception;
+        while (current.getCause() != null) {
+            current = current.getCause();
+        }
+        String message = current.getMessage();
+        if (message == null || message.isBlank()) {
+            return current.getClass().getSimpleName();
+        }
+        return message;
     }
 }

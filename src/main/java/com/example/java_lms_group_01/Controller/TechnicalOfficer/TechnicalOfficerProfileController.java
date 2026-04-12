@@ -8,6 +8,9 @@ import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
 
+/**
+ * Lets the logged-in technical officer view and update personal profile details.
+ */
 public class TechnicalOfficerProfileController {
 
     @FXML
@@ -64,7 +67,8 @@ public class TechnicalOfficerProfileController {
         }
 
         try {
-            var profile = userProfileRepository.findTechnicalOfficerProfile(registrationNo);
+            com.example.java_lms_group_01.model.UserManagementRow profile =
+                    userProfileRepository.findTechnicalOfficerProfile(registrationNo);
             if (profile == null) {
                 return;
             }

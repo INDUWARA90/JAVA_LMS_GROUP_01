@@ -11,10 +11,14 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Database access for the course table.
+ */
 public class CourseRepository {
 
     private static final String BASE_SELECT = "SELECT courseCode, name, lecturerRegistrationNo, department, semester, credit, course_type FROM course";
 
+    // Read courses using optional department and keyword filters.
     public List<Course> findByFilters(String department, String keyword) throws SQLException {
         StringBuilder sql = new StringBuilder(BASE_SELECT + " WHERE 1=1");
         List<Object> params = new ArrayList<>();
