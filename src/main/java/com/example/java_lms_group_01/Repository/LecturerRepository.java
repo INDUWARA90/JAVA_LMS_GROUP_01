@@ -57,7 +57,7 @@ public class LecturerRepository {
             }
         }
     }
-
+    // update medical method
     public void updateMedicalDecision(String lecturerReg, int medicalId, int attendanceId, String approvalStatus, String attendanceStatus) throws SQLException {
         String medicalSql = "UPDATE medical "
                 + "SET approval_status = ?, approved_by_lecturer = ?, approved_at = CURRENT_DATE "
