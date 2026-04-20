@@ -13,7 +13,7 @@ public class DBConnection {
 
     private DBConnection() throws SQLException {
         try {
-            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lms02", "root", "2003");
+            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lms02", "root", "");
             System.out.println("Database connected successfully!");
         } catch (SQLException e) {
             System.out.println("Failed to connect to database!");

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TechnicalOfficerRepository {
 
-
+    // this method is used to add attendance of students
     public void addAttendance(AttendanceRequest request) throws SQLException {
         String sql = "INSERT INTO attendance (StudentReg, courseCode, tech_officer_reg, SubmissionDate, session_type, attendance_status) VALUES (?, ?, ?, ?, ?, ?)";
         Connection connection = DBConnection.getInstance().getConnection();
