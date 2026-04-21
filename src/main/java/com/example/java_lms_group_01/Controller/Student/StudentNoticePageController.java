@@ -33,7 +33,7 @@ public class StudentNoticePageController {
         colDate.setCellValueFactory(d -> d.getValue().dateProperty());
         loadNotices();
     }
-
+//loard notice method
     private void loadNotices() {
         try {
             List<Notice> notices = noticeRepository.findAll();

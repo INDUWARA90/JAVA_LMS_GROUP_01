@@ -45,6 +45,7 @@ public class StudentGradePageController {
         loadGradesAndGpa();
     }
 
+    //loard grade and GPA method
     private void loadGradesAndGpa() {
         String regNo = LoggedInStudent.getRegistrationNo();
         if (regNo == null || regNo.isBlank()) {
