@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import java.time.LocalDate;
 
+/**
+ * Combined user/profile data model used in profile and admin screens.
+ */
 public class UserRecord {
     private String userId;
     private String firstName;

@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Marks row model used in lecturer marks screen.
+ */
 public class Mark {
     private String markId;
     private String studentReg;

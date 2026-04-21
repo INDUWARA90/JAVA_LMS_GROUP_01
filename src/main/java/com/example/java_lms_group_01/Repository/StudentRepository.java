@@ -144,8 +144,8 @@ public class StudentRepository {
         String sql = "SELECT m.StudentReg, m.courseCode, c.name, c.credit, " +
                 "m.quiz_1, m.quiz_2, m.quiz_3, m.assessment, m.Project, m.mid_term, " +
                 "m.final_theory, m.final_practical, " +
-                "EXISTS (SELECT 1 FROM exam_attendance ea WHERE ea.studentReg = m.StudentReg " +
-                "AND ea.courseCode = m.courseCode AND ea.status = 'present') AS exam_present, " +
+                "(SELECT ea.status FROM exam_attendance ea WHERE ea.studentReg = m.StudentReg " +
+                "AND ea.courseCode = m.courseCode LIMIT 1) AS exam_status, " +
                 "EXISTS (SELECT 1 FROM medical md WHERE md.StudentReg = m.StudentReg " +
                 "AND md.courseCode = m.courseCode AND md.approval_status = 'approved' " +
                 "AND LOWER(COALESCE(md.session_type, '')) = 'exam') AS approved_exam_medical " +
@@ -167,6 +167,7 @@ public class StudentRepository {
         double sgpaWeightedPoints = 0.0;
         int sgpaCredits = 0;
 
+        boolean withheld = false;
         while (rs.next()) {
             String courseCode = safe(rs.getString("courseCode"));
             boolean attendanceEligible = isAttendanceEligible(connection, rs.getString("StudentReg"), courseCode);
@@ -185,9 +186,12 @@ public class StudentRepository {
             GradeResult gradeResult = GradeScaleUtil.evaluatePublishedGrade(
                     breakdown,
                     attendanceEligible,
-                    rs.getInt("exam_present") == 1,
+                    rs.getString("exam_status"),
                     rs.getInt("approved_exam_medical") == 1
             );
+            if ("MC".equalsIgnoreCase(gradeResult.getPublishedGrade())) {
+                withheld = true;
+            }
             int credit = rs.getInt("credit");
 
             grades.add(new Grade(
@@ -219,7 +223,7 @@ public class StudentRepository {
             sgpa = sgpaWeightedPoints / sgpaCredits;
         }
 
-        return new StudentGradeSummary(grades, cgpa, sgpa);
+        return new StudentGradeSummary(grades, cgpa, sgpa, withheld);
     }
 
     public List<Material> findMaterialsByStudent(String registrationNo, String keyword) throws SQLException {

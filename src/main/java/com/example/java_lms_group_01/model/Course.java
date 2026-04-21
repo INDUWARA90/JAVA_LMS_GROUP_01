@@ -2,6 +2,10 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Course model used in forms and JavaFX tables.
+ * Stores one course row and exposes table properties.
+ */
 public class Course {
     private String courseCode;
     private String name;
@@ -137,6 +141,7 @@ public class Course {
     }
 
     private static SimpleStringProperty property(String value) {
+        // Prevent null text from breaking UI cells.
         return new SimpleStringProperty(value == null ? "" : value);
     }
 }

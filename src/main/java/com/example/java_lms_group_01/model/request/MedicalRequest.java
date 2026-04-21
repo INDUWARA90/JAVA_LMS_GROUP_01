@@ -2,6 +2,7 @@ package com.example.java_lms_group_01.model.request;
 
 import java.time.LocalDate;
 
+
 public class MedicalRequest {
     private String studentRegNo;
     private String courseCode;

@@ -25,18 +25,6 @@ public class LecturerGpaController {
     @FXML
     private TextField txtStudentSearch;
     @FXML
-    private TableView<Performance> tblFinalMarks;
-    @FXML
-    private TableColumn<Performance, String> colFinalStudentReg;
-    @FXML
-    private TableColumn<Performance, String> colFinalStudentName;
-    @FXML
-    private TableColumn<Performance, String> colFinalCourseCode;
-    @FXML
-    private TableColumn<Performance, String> colFinalCourseName;
-    @FXML
-    private TableColumn<Performance, String> colFinalMarks;
-    @FXML
     private TableView<Performance> tblPerformance;
     @FXML
     private TableColumn<Performance, String> colStudentReg;
@@ -73,11 +61,6 @@ public class LecturerGpaController {
 
     @FXML
     public void initialize() {
-        colFinalStudentReg.setCellValueFactory(d -> d.getValue().studentRegProperty());
-        colFinalStudentName.setCellValueFactory(d -> d.getValue().studentNameProperty());
-        colFinalCourseCode.setCellValueFactory(d -> d.getValue().courseCodeProperty());
-        colFinalCourseName.setCellValueFactory(d -> d.getValue().courseNameProperty());
-        colFinalMarks.setCellValueFactory(d -> d.getValue().finalMarksProperty());
 
         colStudentReg.setCellValueFactory(d -> d.getValue().studentRegProperty());
         colStudentName.setCellValueFactory(d -> d.getValue().studentNameProperty());
@@ -128,8 +111,6 @@ public class LecturerGpaController {
                     lecturerRepository.findPerformanceByLecturer(currentLecturer(), studentReg, "", batch);
             List<UndergraduateSummary> summaryRows =
                     lecturerRepository.findUndergraduateSummariesByLecturer(currentLecturer(), studentReg, "", batch);
-
-            tblFinalMarks.getItems().setAll(performanceRows);
             tblPerformance.getItems().setAll(performanceRows);
             tblUndergraduateSummary.getItems().setAll(summaryRows);
         } catch (SQLException e) {

@@ -4,6 +4,9 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalDate;
 
+/**
+ * Read-only enrollment row model for admin enrollment table.
+ */
 public class EnrollmentRecord {
 
     private final int enrollmentId;

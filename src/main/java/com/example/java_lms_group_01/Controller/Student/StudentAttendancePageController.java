@@ -11,9 +11,7 @@ import javafx.scene.control.TableView;
 
 import java.sql.SQLException;
 
-/**
- * Shows a student's attendance details and attendance eligibility summary.
- */
+
 public class StudentAttendancePageController {
 
     @FXML

@@ -54,8 +54,13 @@ public class StudentGradePageController {
         try {
             StudentGradeSummary summary = studentRepository.findGradeSummary(regNo);
             tblGrades.getItems().setAll(summary.getGrades());
-            lblCgpa.setText("CGPA : " + String.format("%.2f", summary.getCgpa()));
-            lblSgpa.setText("SGPA : " + String.format("%.2f", summary.getSgpa()));
+            if (summary.isWithheld()) {
+                lblCgpa.setText("CGPA : WH");
+                lblSgpa.setText("SGPA : WH");
+            } else {
+                lblCgpa.setText("CGPA : " + String.format("%.2f", summary.getCgpa()));
+                lblSgpa.setText("SGPA : " + String.format("%.2f", summary.getSgpa()));
+            }
         } catch (SQLException e) {
             showError("Failed to load grades and GPA.", e);
         }

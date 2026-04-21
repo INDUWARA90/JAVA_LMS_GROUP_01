@@ -2,6 +2,7 @@ package com.example.java_lms_group_01.model.summary;
 
 import javafx.beans.property.SimpleStringProperty;
 
+
 public class UndergraduateSummary {
     private String studentReg;
     private String studentName;
@@ -67,6 +68,7 @@ public class UndergraduateSummary {
     }
 
     private static SimpleStringProperty property(String value) {
+        // JavaFX tables use SimpleStringProperty bindings.
         return new SimpleStringProperty(text(value));
     }
 

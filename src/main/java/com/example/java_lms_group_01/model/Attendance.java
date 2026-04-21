@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Attendance row model. Also carries related medical info when joined.
+ */
 public class Attendance {
     private String attendanceId;
     private String studentReg;

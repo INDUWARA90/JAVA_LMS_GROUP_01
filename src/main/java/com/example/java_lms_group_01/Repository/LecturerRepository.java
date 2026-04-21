@@ -163,13 +163,13 @@ public class LecturerRepository {
         String safeBatch = batch == null ? "" : batch.trim();
         String sql = "SELECT m.StudentReg, u.firstName, u.lastName, m.courseCode, c.name, "
                 + "m.quiz_1, m.quiz_2, m.quiz_3, m.assessment, m.Project, m.mid_term, m.final_theory, m.final_practical, "
-                + "EXISTS ( "
-                + "SELECT 1 "
+                + "( "
+                + "SELECT ea.status "
                 + "FROM exam_attendance ea "
                 + "WHERE ea.studentReg = m.StudentReg "
                 + "AND ea.courseCode = m.courseCode "
-                + "AND ea.status = 'present'"
-                + ") AS exam_present, "
+                + "LIMIT 1"
+                + ") AS exam_status, "
                 + "EXISTS ( "
                 + "SELECT 1 "
                 + "FROM medical md "
@@ -251,8 +251,8 @@ public class LecturerRepository {
                     rows.add(new UndergraduateSummary(
                             safe(rs.getString("registrationNo")),
                             fullName(rs),
-                            String.format("%.2f", summary.getSgpa()),
-                            String.format("%.2f", summary.getCgpa())
+                            summary.isWithheld() ? "WH" : String.format("%.2f", summary.getSgpa()),
+                            summary.isWithheld() ? "WH" : String.format("%.2f", summary.getCgpa())
                     ));
                 }
                 return rows;
@@ -262,13 +262,13 @@ public class LecturerRepository {
 
     private AcademicSummary calculateAcademicSummary(Connection connection, String studentReg) throws SQLException {
         String sql = "SELECT m.courseCode, c.credit, m.quiz_1, m.quiz_2, m.quiz_3, m.assessment, m.Project, m.mid_term, m.final_theory, m.final_practical, "
-                + "EXISTS ( "
-                + "SELECT 1 "
+                + "( "
+                + "SELECT ea.status "
                 + "FROM exam_attendance ea "
                 + "WHERE ea.studentReg = m.StudentReg "
                 + "AND ea.courseCode = m.courseCode "
-                + "AND ea.status = 'present'"
-                + ") AS exam_present, "
+                + "LIMIT 1"
+                + ") AS exam_status, "
                 + "EXISTS ( "
                 + "SELECT 1 "
                 + "FROM medical md "
@@ -284,6 +284,7 @@ public class LecturerRepository {
         int gpaCredits = 0;
         double sgpaWeightedPoints = 0.0;
         int sgpaCredits = 0;
+        boolean withheld = false;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, studentReg);
             try (ResultSet rs = statement.executeQuery()) {
@@ -305,9 +306,12 @@ public class LecturerRepository {
                     GradeResult gradeResult = GradeScaleUtil.evaluatePublishedGrade(
                             breakdown,
                             isAttendanceEligible(connection, studentReg, courseCode),
-                            rs.getInt("exam_present") == 1,
+                            rs.getString("exam_status"),
                             rs.getInt("approved_exam_medical") == 1
                     );
+                    if ("MC".equalsIgnoreCase(gradeResult.getPublishedGrade())) {
+                        withheld = true;
+                    }
                     if (gradeResult.getGradePoint() != null) {
                         sgpaWeightedPoints += gradeResult.getGradePoint() * credit;
                         sgpaCredits += credit;
@@ -321,7 +325,8 @@ public class LecturerRepository {
         }
         return new AcademicSummary(
                 gpaCredits == 0 ? 0.0 : gpaWeightedPoints / gpaCredits,
-                sgpaCredits == 0 ? 0.0 : sgpaWeightedPoints / sgpaCredits
+                sgpaCredits == 0 ? 0.0 : sgpaWeightedPoints / sgpaCredits,
+                withheld
         );
     }
 
@@ -610,9 +615,11 @@ public class LecturerRepository {
         GradeResult gradeResult = GradeScaleUtil.evaluatePublishedGrade(
                 breakdown,
                 isAttendanceEligible(connection, rs.getString("StudentReg"), courseCode),
-                rs.getInt("exam_present") == 1,
+                rs.getString("exam_status"),
                 rs.getInt("approved_exam_medical") == 1
         );
+        String sgpaDisplay = summary.isWithheld() ? "WH" : String.format("%.2f", summary.getSgpa());
+        String cgpaDisplay = summary.isWithheld() ? "WH" : String.format("%.2f", summary.getCgpa());
         return new Performance(
                 safe(rs.getString("StudentReg")),
                 fullName(rs),
@@ -622,8 +629,8 @@ public class LecturerRepository {
                 String.format("%.2f", breakdown.getEndMarks()),
                 String.format("%.2f", breakdown.getTotalMarks()),
                 gradeResult.getPublishedGrade(),
-                String.format("%.2f", summary.getSgpa()),
-                String.format("%.2f", summary.getCgpa())
+                sgpaDisplay,
+                cgpaDisplay
         );
     }
 

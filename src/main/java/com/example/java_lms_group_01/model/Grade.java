@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Represents one published course grade row for the student page.
+ */
 public class Grade {
     private String courseCode;
     private String courseName;

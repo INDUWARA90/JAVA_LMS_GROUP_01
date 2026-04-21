@@ -1,5 +1,6 @@
 package com.example.java_lms_group_01.model.request;
 
+
 public class MarkRequest {
     private String studentReg;
     private String courseCode;

@@ -72,7 +72,7 @@ public final class AssessmentStructureUtil {
         );
     }
 
-    // -------- LOAD WEIGHTS FROM DATABASE --------
+    // -------- LOAD WEIGHTS FROM --------
     private static Map<String, Double> loadWeights(Connection connection, String courseCode) throws SQLException {
 
         Map<String, Double> weightMap = new HashMap<>();

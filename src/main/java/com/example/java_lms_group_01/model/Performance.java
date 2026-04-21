@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Final performance row shown in lecturer GPA/performance screens.
+ */
 public class Performance {
     private String studentReg;
     private String studentName;

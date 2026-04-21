@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Eligibility row model (attendance + CA requirement summary).
+ */
 public class Eligibility {
     private String studentReg;
     private String studentName;

@@ -28,17 +28,6 @@
 
     <TabPane VBox.vgrow="ALWAYS">
         <tabs>
-            <Tab closable="false" text="Final Marks">
-                <TableView fx:id="tblFinalMarks">
-                    <columns>
-                        <TableColumn fx:id="colFinalStudentReg" text="Student Reg" prefWidth="120.0" />
-                        <TableColumn fx:id="colFinalStudentName" text="Student Name" prefWidth="220.0" />
-                        <TableColumn fx:id="colFinalCourseCode" text="Course Code" prefWidth="120.0" />
-                        <TableColumn fx:id="colFinalCourseName" text="Course Name" prefWidth="220.0" />
-                        <TableColumn fx:id="colFinalMarks" text="Final Marks" prefWidth="120.0" />
-                    </columns>
-                </TableView>
-            </Tab>
             <Tab closable="false" text="Subject Results">
                 <TableView fx:id="tblPerformance">
                     <columns>

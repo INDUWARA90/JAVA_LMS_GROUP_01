@@ -1,8 +1,10 @@
 package com.example.java_lms_group_01.Repository;
 
 import com.example.java_lms_group_01.model.Attendance;
+import com.example.java_lms_group_01.model.ExamAttendance;
 import com.example.java_lms_group_01.model.Medical;
 import com.example.java_lms_group_01.model.request.AttendanceRequest;
+import com.example.java_lms_group_01.model.request.ExamAttendanceRequest;
 import com.example.java_lms_group_01.model.request.MedicalRequest;
 import com.example.java_lms_group_01.util.DBConnection;
 
@@ -15,6 +17,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TechnicalOfficerRepository {
+
+    public void addExamAttendance(ExamAttendanceRequest request) throws SQLException {
+        String sql = "INSERT INTO exam_attendance (studentReg, courseCode, status, attendanceDate) VALUES (?, ?, ?, ?)";
+        Connection connection = DBConnection.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindExamAttendanceRequest(statement, request);
+            statement.executeUpdate();
+        }
+    }
+
+    public void updateExamAttendance(int examAttendanceId, ExamAttendanceRequest request) throws SQLException {
+        String sql = "UPDATE exam_attendance SET studentReg = ?, courseCode = ?, status = ?, attendanceDate = ? WHERE exam_attendance_id = ?";
+        Connection connection = DBConnection.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindExamAttendanceRequest(statement, request);
+            statement.setInt(5, examAttendanceId);
+            statement.executeUpdate();
+        }
+    }
+
+    public void deleteExamAttendance(int examAttendanceId) throws SQLException {
+        String sql = "DELETE FROM exam_attendance WHERE exam_attendance_id = ?";
+        Connection connection = DBConnection.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, examAttendanceId);
+            statement.executeUpdate();
+        }
+    }
+
+    public List<ExamAttendance> findExamAttendance(String keyword) throws SQLException {
+        String safeKeyword = keyword == null ? "" : keyword.trim();
+        String sql = "SELECT exam_attendance_id, studentReg, courseCode, status, attendanceDate "
+                + "FROM exam_attendance "
+                + "ORDER BY exam_attendance_id DESC";
+        if (!safeKeyword.isEmpty()) {
+            sql = "SELECT exam_attendance_id, studentReg, courseCode, status, attendanceDate "
+                    + "FROM exam_attendance "
+                    + "WHERE studentReg LIKE ? OR courseCode LIKE ? "
+                    + "ORDER BY exam_attendance_id DESC";
+        }
+        Connection connection = DBConnection.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (!safeKeyword.isEmpty()) {
+                String pattern = "%" + safeKeyword + "%";
+                statement.setString(1, pattern);
+                statement.setString(2, pattern);
+            }
+            try (ResultSet rs = statement.executeQuery()) {
+                List<ExamAttendance> rows = new ArrayList<>();
+                while (rs.next()) {
+                    rows.add(mapExamAttendanceRecord(rs));
+                }
+                return rows;
+            }
+        }
+    }
 
 
     public void addAttendance(AttendanceRequest request) throws SQLException {
@@ -201,6 +259,13 @@ public class TechnicalOfficerRepository {
         statement.setString(6, request.getStatus());
     }
 
+    private void bindExamAttendanceRequest(PreparedStatement statement, ExamAttendanceRequest request) throws SQLException {
+        statement.setString(1, request.getStudentRegNo());
+        statement.setString(2, request.getCourseCode());
+        statement.setString(3, request.getStatus());
+        statement.setDate(4, Date.valueOf(request.getAttendanceDate()));
+    }
+
     private void bindMedicalRequest(PreparedStatement statement, MedicalRequest request) throws SQLException {
         statement.setString(1, request.getStudentRegNo());
         statement.setString(2, request.getCourseCode());
@@ -247,6 +312,17 @@ public class TechnicalOfficerRepository {
                 String.valueOf(rs.getInt("attendance_id")),
                 safe(rs.getString("approval_status")),
                 safe(rs.getString("tech_officer_reg"))
+        );
+    }
+
+    private ExamAttendance mapExamAttendanceRecord(ResultSet rs) throws SQLException {
+        Date attendanceDate = rs.getDate("attendanceDate");
+        return new ExamAttendance(
+                String.valueOf(rs.getInt("exam_attendance_id")),
+                safe(rs.getString("studentReg")),
+                safe(rs.getString("courseCode")),
+                safe(rs.getString("status")),
+                attendanceDate == null ? "" : attendanceDate.toString()
         );
     }
 

@@ -4,6 +4,9 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalTime;
 
+/**
+ * Timetable row model used by all user roles.
+ */
 public class Timetable {
     private String timetableId;
     private String department;

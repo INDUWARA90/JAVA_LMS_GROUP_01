@@ -110,6 +110,11 @@ public class TechnicalOfficerDashboardController {
     }
 
     @FXML
+    private void navExamAttendance(ActionEvent event) {
+        loadContent("/view/technicalofficer/technical_officer_exam_attendance.fxml");
+    }
+
+    @FXML
     private void navNotices(ActionEvent event) {
         loadContent("/view/technicalofficer/technical_officer_notices.fxml");
     }

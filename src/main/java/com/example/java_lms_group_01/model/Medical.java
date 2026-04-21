@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Medical request row model shown to student/lecturer/technical officer.
+ */
 public class Medical {
     private String medicalId;
     private String studentReg;

@@ -65,30 +65,26 @@ public final class GradeScaleUtil {
     public static GradeResult evaluatePublishedGrade(
             MarkBreakdown breakdown,
             boolean attendanceEligible,
-            boolean examPresent,
+            String examAttendanceStatus,
             boolean approvedExamMedical) {
 
         if (!attendanceEligible) {
             return new GradeResult("E", 0.0);
         }
 
-        if (approvedExamMedical) {
-            return new GradeResult("MC", null);
-        }
-
         boolean hasEndComponent = breakdown.getEndMaximum() > 0;
         boolean caPassed = meetsCaRequirement(breakdown);
         boolean endPassed = meetsEndRequirement(breakdown);
 
-        // Treat entered end-component marks as exam participation when
-        // exam_attendance rows are missing in seed/manual data.
-        boolean hasRecordedEndMarks = breakdown.getEndMarks() > 0;
-        boolean effectiveExamPresent = examPresent || hasRecordedEndMarks;
+        String safeExamStatus = examAttendanceStatus == null ? "" : examAttendanceStatus.trim().toLowerCase();
+        boolean examPresent = "present".equals(safeExamStatus);
+        boolean examAbsent = "absent".equals(safeExamStatus);
 
-        if (hasEndComponent && !effectiveExamPresent) {
-            return caPassed
-                    ? new GradeResult("EE", null)
-                    : new GradeResult("E", 0.0);
+        if (hasEndComponent && !examPresent) {
+            if (examAbsent && approvedExamMedical) {
+                return new GradeResult("MC", null);
+            }
+            return new GradeResult("E", 0.0);
         }
 
         if (!caPassed && !endPassed) {

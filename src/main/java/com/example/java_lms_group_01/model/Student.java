@@ -2,6 +2,9 @@ package com.example.java_lms_group_01.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Student row model used in lecturer/admin tables.
+ */
 public class Student {
     private String regNo;
     private String name;

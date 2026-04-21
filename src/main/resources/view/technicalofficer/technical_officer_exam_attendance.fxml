@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="12.0" style="-fx-padding: 18; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_lms_group_01.Controller.TechnicalOfficer.TechnicalOfficerExamAttendanceController">
+    <Label text="Maintain Exam Attendance">
+        <font>
+            <Font name="System Bold" size="22.0" />
+        </font>
+    </Label>
+
+    <HBox spacing="10.0">
+        <children>
+            <TextField fx:id="txtStudentRegNo" promptText="Student Registration No" />
+            <TextField fx:id="txtCourseCode" promptText="Course Code" />
+            <ComboBox fx:id="cmbStatus" promptText="Status" prefWidth="140.0" />
+            <DatePicker fx:id="dpAttendanceDate" promptText="Attendance Date" />
+        </children>
+    </HBox>
+
+    <HBox spacing="10.0">
+        <children>
+            <Button mnemonicParsing="false" onAction="#addRecord" text="Add Record" />
+            <Button mnemonicParsing="false" onAction="#updateRecord" text="Update Record" />
+            <Button mnemonicParsing="false" onAction="#deleteRecord" text="Delete Record" />
+            <Button mnemonicParsing="false" onAction="#clearForm" text="Clear" />
+        </children>
+        <padding>
+            <Insets top="4.0" bottom="4.0" />
+        </padding>
+    </HBox>
+
+    <TableView fx:id="tblExamAttendance" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colExamAttendanceId" prefWidth="120.0" text="Exam Attendance ID" />
+            <TableColumn fx:id="colStudentRegNo" prefWidth="160.0" text="Student Reg No" />
+            <TableColumn fx:id="colCourseCode" prefWidth="130.0" text="Course Code" />
+            <TableColumn fx:id="colStatus" prefWidth="120.0" text="Status" />
+            <TableColumn fx:id="colAttendanceDate" prefWidth="140.0" text="Attendance Date" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="10.0">
+        <children>
+            <TextField fx:id="txtSearch" promptText="Search by student/course" />
+            <Button mnemonicParsing="false" onAction="#searchRecords" text="Search" />
+            <Button mnemonicParsing="false" onAction="#refreshRecords" text="Refresh" />
+        </children>
+    </HBox>
+</VBox>
