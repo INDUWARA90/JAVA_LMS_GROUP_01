@@ -97,7 +97,7 @@ public class StudentDashboardController {
         }
     }
 
-    // Load a student page into the center area.
+    // Load student page into the center area.
     private void loadContent(String fxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
