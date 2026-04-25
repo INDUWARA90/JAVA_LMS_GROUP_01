@@ -281,9 +281,10 @@ public class UserRepository {
             u.executeUpdate();
 
             PreparedStatement t = con.prepareStatement(
-                    "INSERT INTO tech_officer VALUES (?, ?)");
+                    "INSERT INTO tech_officer VALUES (?, ?,?)");
             t.setString(1, row.getRegistrationNo());
             t.setString(2, PasswordUtil.hashPassword(row.getPassword()));
+            t.setString(3, row.getDepartment());
             t.executeUpdate();
 
             return true;

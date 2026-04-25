@@ -122,7 +122,7 @@ public class LecturerRepository {
                         "THEN 1 ELSE 0 END) AS eligible_sessions, " +
                         "COUNT(a.attendance_id) AS total_sessions, " +
                         "MAX(mk.quiz_1) AS quiz_1, MAX(mk.quiz_2) AS quiz_2, MAX(mk.quiz_3) AS quiz_3, " +
-                        "MAX(mk.assessment) AS assessment, MAX(mk.Project) AS Project " +
+                        "MAX(mk.assessment) AS assessment, MAX(mk.Project) AS Project, MAX(mk.mid_term) AS mid_term " +
                         "FROM enrollment e " +
                         "INNER JOIN course c ON c.courseCode = e.courseCode " +
                         "INNER JOIN student s ON s.registrationNo = e.studentReg " +
@@ -167,14 +167,23 @@ public class LecturerRepository {
 
             double attendance = totalSessions == 0 ? 0 : (eligibleSessions * 100.0 / totalSessions);
 
-            double caMarks =
-                    rs.getDouble("quiz_1") +
-                            rs.getDouble("quiz_2") +
-                            rs.getDouble("quiz_3") +
-                            rs.getDouble("assessment") +
-                            rs.getDouble("Project");
+            MarkBreakdown breakdown = AssessmentStructureUtil.calculateMarkBreakdown(
+                    con,
+                    rs.getString("courseCode"),
+                    nullableDecimal(rs.getObject("quiz_1")),
+                    nullableDecimal(rs.getObject("quiz_2")),
+                    nullableDecimal(rs.getObject("quiz_3")),
+                    nullableDecimal(rs.getObject("assessment")),
+                    nullableDecimal(rs.getObject("Project")),
+                    nullableDecimal(rs.getObject("mid_term")),
+                    null,
+                    null
+            );
 
-            boolean eligible = attendance >= 80 && caMarks >= 50;
+            double caMarks = breakdown.getCaMarks();
+            double caThreshold = GradeScaleUtil.minimumRequiredMark(breakdown.getCaMaximum());
+
+            boolean eligible = attendance >= 80 && caMarks >= caThreshold;
 
             list.add(new Eligibility(
                     rs.getString("studentReg"),
@@ -184,7 +193,7 @@ public class LecturerRepository {
                     String.valueOf(totalSessions),
                     String.format("%.2f%%", attendance),
                     String.format("%.2f", caMarks),
-                    "50",
+                    String.format("%.2f", caThreshold),
                     eligible ? "Eligible" : "Not Eligible"
             ));
         }

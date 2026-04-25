@@ -14,9 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Shows attendance eligibility results for students in the lecturer's courses.
- */
 public class LecturerEligibilityController {
 
     @FXML
@@ -48,6 +45,13 @@ public class LecturerEligibilityController {
 
     @FXML
     public void initialize() {
+        setupColumns();
+        loadBatchOptions();
+        loadEligibility("", "");
+    }
+
+    // Set each table column in a simple way.
+    private void setupColumns() {
         colStudentReg.setCellValueFactory(d -> d.getValue().studentRegProperty());
         colStudentName.setCellValueFactory(d -> d.getValue().studentNameProperty());
         colCourseCode.setCellValueFactory(d -> d.getValue().courseCodeProperty());
@@ -57,16 +61,14 @@ public class LecturerEligibilityController {
         colCaMarks.setCellValueFactory(d -> d.getValue().caMarksProperty());
         colCaThreshold.setCellValueFactory(d -> d.getValue().caThresholdProperty());
         colEligibility.setCellValueFactory(d -> d.getValue().eligibilityProperty());
-
-        loadBatchOptions();
-        loadEligibility("", "");
     }
 
     @FXML
     private void submitFilters() {
-        loadEligibility(value(txtStudentSearch), selectedBatch());
+        loadEligibility(text(txtStudentSearch), selectedBatch());
     }
 
+    // Load batches for the => logged-in lecturer.
     private void loadBatchOptions() {
         try {
             List<String> batches = lecturerRepository.findBatchesByLecturer(currentLecturer());
@@ -82,9 +84,13 @@ public class LecturerEligibilityController {
 
     private String selectedBatch() {
         String batch = cmbBatch.getValue();
-        return batch == null || "All Batches".equals(batch) ? "" : batch.trim();
+        if (batch == null || "All Batches".equals(batch)) {
+            return "";
+        }
+        return batch.trim();
     }
 
+    // Ask the repository for eligibility rows and show them in the table.
     private void loadEligibility(String studentReg, String batch) {
         try {
             tblEligibility.getItems().setAll(
@@ -100,8 +106,8 @@ public class LecturerEligibilityController {
         return reg == null ? "" : reg.trim();
     }
 
-    private String value(TextField textField) {
-        return textField.getText() == null ? "" : textField.getText().trim();
+    private String text(TextField field) {
+        return field.getText() == null ? "" : field.getText().trim();
     }
 
     private void showError(String message, Exception e) {
