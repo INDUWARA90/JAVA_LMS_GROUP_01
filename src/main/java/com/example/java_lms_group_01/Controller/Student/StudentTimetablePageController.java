@@ -2,7 +2,7 @@ package com.example.java_lms_group_01.Controller.Student;
 
 import com.example.java_lms_group_01.Repository.StudentRepository;
 import com.example.java_lms_group_01.model.Timetable;
-import com.example.java_lms_group_01.util.LoggedInStudent;
+import com.example.java_lms_group_01.session.LoggedInStudent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;

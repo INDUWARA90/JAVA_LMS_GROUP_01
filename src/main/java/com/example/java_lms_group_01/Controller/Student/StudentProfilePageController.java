@@ -3,7 +3,7 @@ package com.example.java_lms_group_01.Controller.Student;
 import com.example.java_lms_group_01.Repository.UserProfileRepository;
 import com.example.java_lms_group_01.model.UserRecord;
 import com.example.java_lms_group_01.model.users.Student;
-import com.example.java_lms_group_01.util.LoggedInStudent;
+import com.example.java_lms_group_01.session.LoggedInStudent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;

@@ -4,7 +4,10 @@ import com.example.java_lms_group_01.Repository.TimetableRepository;
 import com.example.java_lms_group_01.model.Timetable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 import java.sql.SQLException;
 import java.util.List;

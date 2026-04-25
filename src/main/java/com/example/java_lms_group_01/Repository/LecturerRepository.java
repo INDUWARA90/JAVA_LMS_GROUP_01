@@ -14,9 +14,9 @@ import com.example.java_lms_group_01.model.summary.UndergraduateSummary;
 import com.example.java_lms_group_01.util.AssessmentStructureUtil;
 import com.example.java_lms_group_01.util.AttendanceEligibilityUtil;
 import com.example.java_lms_group_01.util.DBConnection;
-import com.example.java_lms_group_01.util.GradeResult;
 import com.example.java_lms_group_01.util.GradeScaleUtil;
-import com.example.java_lms_group_01.util.MarkBreakdown;
+import com.example.java_lms_group_01.model.summary.GradeResult;
+import com.example.java_lms_group_01.model.summary.MarkBreakdown;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

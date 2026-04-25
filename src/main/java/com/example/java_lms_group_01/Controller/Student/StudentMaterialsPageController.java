@@ -2,12 +2,13 @@ package com.example.java_lms_group_01.Controller.Student;
 
 import com.example.java_lms_group_01.Repository.StudentRepository;
 import com.example.java_lms_group_01.model.Material;
-import com.example.java_lms_group_01.util.LoggedInStudent;
-import javafx.beans.property.SimpleStringProperty;
+import com.example.java_lms_group_01.session.LoggedInStudent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.List;

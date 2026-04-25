@@ -2,20 +2,12 @@ package com.example.java_lms_group_01.Controller.Admin;
 
 import com.example.java_lms_group_01.Repository.AdminRepository;
 import com.example.java_lms_group_01.model.Timetable;
-import com.example.java_lms_group_01.util.LoggedInAdmin;
+import com.example.java_lms_group_01.session.LoggedInAdmin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.net.URL;
@@ -219,7 +211,7 @@ public class ManageTimetablesController implements Initializable {
         TextField txtStartTime = new TextField(edit ? timeText(existing.getStartTime()) : "");
         TextField txtEndTime = new TextField(edit ? timeText(existing.getEndTime()) : "");
         ComboBox<String> cmbSessionType = new ComboBox<>();
-        cmbSessionType.getItems().addAll("theory", "practical");
+        cmbSessionType.getItems().addAll("theory", "practical","both");
         cmbSessionType.setValue(edit ? text(existing.getSessionType()) : null);
 
         GridPane grid = new GridPane();

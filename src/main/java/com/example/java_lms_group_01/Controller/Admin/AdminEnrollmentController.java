@@ -4,15 +4,7 @@ import com.example.java_lms_group_01.Repository.AdminRepository;
 import com.example.java_lms_group_01.model.Course;
 import com.example.java_lms_group_01.model.EnrollmentRecord;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.sql.SQLException;

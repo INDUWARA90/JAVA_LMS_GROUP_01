@@ -1,7 +1,7 @@
 package com.example.java_lms_group_01.Controller.Lecturer;
 
 import com.example.java_lms_group_01.Repository.UserImageRepository;
-import com.example.java_lms_group_01.util.LoggedInLecture;
+import com.example.java_lms_group_01.session.LoggedInLecture;
 import com.example.java_lms_group_01.util.ProfileImageUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
