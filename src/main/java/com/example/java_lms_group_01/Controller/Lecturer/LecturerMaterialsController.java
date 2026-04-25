@@ -6,11 +6,7 @@ import com.example.java_lms_group_01.model.request.MaterialRequest;
 import com.example.java_lms_group_01.session.LoggedInLecture;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.sql.SQLException;
 
