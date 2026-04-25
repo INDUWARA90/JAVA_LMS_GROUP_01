@@ -10,9 +10,6 @@ import javafx.scene.control.TableView;
 
 import java.sql.SQLException;
 
-/**
- * Shows the courses that belong to the logged-in student.
- */
 public class StudentCoursePageController {
 
     @FXML
@@ -38,6 +35,11 @@ public class StudentCoursePageController {
 
     @FXML
     public void initialize() {
+        setupColumns();
+        loadCourses();
+    }
+
+    private void setupColumns() {
         colCourseCode.setCellValueFactory(d -> d.getValue().courseCodeProperty());
         colName.setCellValueFactory(d -> d.getValue().nameProperty());
         colLecturer.setCellValueFactory(d -> d.getValue().lecturerProperty());
@@ -46,12 +48,11 @@ public class StudentCoursePageController {
         colCredit.setCellValueFactory(d -> d.getValue().creditProperty());
         colType.setCellValueFactory(d -> d.getValue().typeProperty());
         colEnrollmentStatus.setCellValueFactory(d -> d.getValue().enrollmentStatusProperty());
-        loadCourses();
     }
 
     private void loadCourses() {
-        String regNo = LoggedInStudent.getRegistrationNo();
-        if (regNo == null || regNo.isBlank()) {
+        String regNo = currentStudent();
+        if (regNo.isBlank()) {
             return;
         }
 
@@ -60,6 +61,11 @@ public class StudentCoursePageController {
         } catch (SQLException e) {
             showError("Failed to load course details.", e);
         }
+    }
+
+    private String currentStudent() {
+        String reg = LoggedInStudent.getRegistrationNo();
+        return reg == null ? "" : reg.trim();
     }
 
     private void showError(String message, Exception e) {

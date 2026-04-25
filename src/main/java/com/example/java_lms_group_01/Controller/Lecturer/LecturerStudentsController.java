@@ -10,9 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
-/**
- * Shows students enrolled in courses taught by the logged-in lecturer.
- */
+
 public class LecturerStudentsController {
 
     @FXML
@@ -38,6 +36,12 @@ public class LecturerStudentsController {
 
     @FXML
     public void initialize() {
+        setupColumns();
+        loadStudents("");
+    }
+
+    // Set the student table columns.
+    private void setupColumns() {
         colRegNo.setCellValueFactory(d -> d.getValue().regNoProperty());
         colName.setCellValueFactory(d -> d.getValue().nameProperty());
         colEmail.setCellValueFactory(d -> d.getValue().emailProperty());
@@ -45,18 +49,17 @@ public class LecturerStudentsController {
         colDepartment.setCellValueFactory(d -> d.getValue().departmentProperty());
         colStatus.setCellValueFactory(d -> d.getValue().statusProperty());
         colGpa.setCellValueFactory(d -> d.getValue().gpaProperty());
-        loadStudents(null);
     }
 
     @FXML
     private void searchStudents() {
-        loadStudents(txtSearch.getText());
+        loadStudents(text(txtSearch));
     }
 
     @FXML
     private void refreshStudents() {
         txtSearch.clear();
-        loadStudents(null);
+        loadStudents("");
     }
 
     private void loadStudents(String keyword) {
@@ -74,6 +77,10 @@ public class LecturerStudentsController {
         return reg == null ? "" : reg.trim();
     }
 
+    private String text(TextField field) {
+        return field.getText() == null ? "" : field.getText().trim();
+    }
+
     private void showError(String message, Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Database Error");
@@ -81,5 +88,4 @@ public class LecturerStudentsController {
         alert.setContentText(message + "\n" + e.getMessage());
         alert.showAndWait();
     }
-
 }
