@@ -20,9 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lecturer-facing facade that combines marks, eligibility, materials, and timetable data.
- */
 public class LecturerRepository {
 
     private final EnrollmentRepository enrollmentRepository = new EnrollmentRepository();

@@ -21,9 +21,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles mark entry, published grades, and GPA-style academic summaries.
- */
 public class MarkRepository {
 
     private final EligibilityRepository eligibilityRepository = new EligibilityRepository();

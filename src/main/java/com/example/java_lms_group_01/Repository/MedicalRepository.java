@@ -13,9 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles medical submissions, lecturer approvals, and medical views.
- */
 public class MedicalRepository {
 
     public void addMedical(MedicalRequest request) throws SQLException {

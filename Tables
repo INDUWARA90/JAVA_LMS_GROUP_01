@@ -284,8 +284,33 @@ INSERT INTO enrollment (studentReg, courseCode, status, enrollment_date) VALUES
 ('TG/2023/1701','ENG2122','active','2026-01-15'),('TG/2023/1701','ICT2113','active','2026-01-15'),('TG/2023/1701','ICT2122','active','2026-01-15'),('TG/2023/1701','ICT2132','active','2026-01-15'),('TG/2023/1701','ICT2142','active','2026-01-15'),('TG/2023/1701','ICT2152','active','2026-01-15'),('TG/2023/1701','TCS2112','active','2026-01-15'),('TG/2023/1701','TCS2122','active','2026-01-15');
 
 -- 6. MARKS
-INSERT INTO marks (LectureReg, StudentReg, courseCode, quiz_1, quiz_2, quiz_3, assessment, Project, mid_term, final_theory, final_practical) VALUES
-('L001','TG/2023/1701','ICT2132',85,90,88,92,85,80,NULL,85);
+INSERT INTO marks
+(LectureReg, StudentReg, courseCode, quiz_1, quiz_2, quiz_3, assessment, Project, mid_term, final_theory, final_practical)
+VALUES
+
+-- ENG2122 (Theory)
+('L001','TG/2023/1701','ENG2122', NULL, NULL, NULL, 75, NULL, 70, 80, NULL),
+
+-- ICT2113 (Both)
+('L001','TG/2023/1701','ICT2113', 80, 75, NULL, 78, NULL, 72, 85, 80),
+
+-- ICT2122 (Theory)
+('L001','TG/2023/1701','ICT2122', 82, NULL, NULL, NULL, NULL, 74, 88, NULL),
+
+-- ICT2132 (Practical) (already inserted, skip OR update instead)
+-- ('L001','TG/2023/1701','ICT2132',85,90,88,92,85,80,NULL,85),
+
+-- ICT2142 (Theory)
+('L001','TG/2023/1701','ICT2142', 78, NULL, NULL, 80, NULL, NULL, 82, NULL),
+
+-- ICT2152 (Theory)
+('L001','TG/2023/1701','ICT2152', NULL, NULL, NULL, NULL, 85, 70, 80, NULL),
+
+-- TCS2112 (Theory)
+('L001','TG/2023/1701','TCS2112', 75, NULL, NULL, 70, 78, NULL, 82, NULL),
+
+-- TCS2122 (100% CA subject)
+('L001','TG/2023/1701','TCS2122', NULL, NULL, NULL, 88, NULL, NULL, NULL, NULL);
 
 -- ==================== ATTENDANCE DATA ====================
 INSERT INTO attendance
@@ -445,4 +470,12 @@ INSERT INTO notice (notice_title, notice_content, publishDate, createdBy) VALUES
 ('Eligibility Notice','CA >=40% and Attendance >=80% required','2026-03-01','ADM001');
 
 INSERT INTO exam_attendance (studentReg, courseCode, status, attendanceDate) VALUES
+('TG/2023/1701','ENG2122','present','2026-04-10');
+('TG/2023/1701','ICT2113','present','2026-04-10');
+('TG/2023/1701','ICT2122','present','2026-04-10');
 ('TG/2023/1701','ICT2132','present','2026-04-10');
+('TG/2023/1701','ICT2142','present','2026-04-10');
+('TG/2023/1701','ICT2152','present','2026-04-10');
+('TG/2023/1701','ICT2152','present','2026-04-10');
+('TG/2023/1701','TCS2112','present','2026-04-10');
+('TG/2023/1701','TCS2122','present','2026-04-10');

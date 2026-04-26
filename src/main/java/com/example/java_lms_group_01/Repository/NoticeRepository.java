@@ -12,9 +12,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Manages notices and notice search operations.
- */
 public class NoticeRepository {
 
     public List<Notice> findAll() throws SQLException {

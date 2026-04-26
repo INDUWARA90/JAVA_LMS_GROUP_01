@@ -13,9 +13,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Manages user CRUD and profile updates across all user roles.
- */
 public class UserRepository {
 
     private final UserImageRepository userImageRepository = new UserImageRepository();

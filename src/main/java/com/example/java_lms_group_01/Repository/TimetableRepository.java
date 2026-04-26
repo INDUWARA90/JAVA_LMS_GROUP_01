@@ -11,9 +11,6 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Manages timetable records and timetable lookups.
- */
 public class TimetableRepository {
 
     public List<Timetable> findByFilters(String department, String day, String keyword) throws SQLException {

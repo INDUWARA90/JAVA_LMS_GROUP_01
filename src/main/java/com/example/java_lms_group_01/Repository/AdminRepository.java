@@ -9,9 +9,6 @@ import com.example.java_lms_group_01.model.UserRecord;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Admin-facing facade that delegates work to focused domain repositories.
- */
 public class AdminRepository {
 
     private final UserRepository userRepository = new UserRepository();

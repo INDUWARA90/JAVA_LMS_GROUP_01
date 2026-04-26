@@ -4,9 +4,6 @@ import com.example.java_lms_group_01.model.UserRecord;
 
 import java.sql.SQLException;
 
-/**
- * Profile-facing facade for student, lecturer, and technical-officer details.
- */
 public class UserProfileRepository {
 
     private final UserRepository userRepository = new UserRepository();

@@ -16,9 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Student-facing facade for personal learning data and course access.
- */
 public class StudentRepository {
 
     private final AttendanceRepository attendanceRepository = new AttendanceRepository();

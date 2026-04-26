@@ -13,9 +13,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles course enrollment queries and enrollment status changes.
- */
 public class EnrollmentRepository {
 
     public List<String> findStudentBatches() throws SQLException {

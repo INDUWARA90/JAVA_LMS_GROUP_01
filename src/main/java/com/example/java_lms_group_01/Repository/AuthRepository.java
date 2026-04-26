@@ -9,9 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Verifies login credentials and resolves the matching user role.
- */
 public class AuthRepository {
 
     public UserRole findRoleByRegistrationNo(String registrationNo, String rawPassword) throws SQLException {

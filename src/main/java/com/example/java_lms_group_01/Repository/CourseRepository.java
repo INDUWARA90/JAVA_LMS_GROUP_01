@@ -10,9 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles course master data such as creation, updates, filtering, and deletion.
- */
 public class CourseRepository {
 
     public List<Course> findByFilters(String department, String keyword) throws SQLException {

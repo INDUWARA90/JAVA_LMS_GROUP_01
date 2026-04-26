@@ -14,9 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Calculates attendance and CA eligibility summaries.
- */
 public class EligibilityRepository {
 
     public List<Eligibility> findAttendanceEligibilityByStudent(String studentReg) throws SQLException {

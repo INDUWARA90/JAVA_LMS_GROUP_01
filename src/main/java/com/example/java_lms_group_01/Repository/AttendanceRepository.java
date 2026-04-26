@@ -14,9 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles lecture attendance and exam attendance records.
- */
 public class AttendanceRepository {
 
     public void addExamAttendance(ExamAttendanceRequest request) throws SQLException {

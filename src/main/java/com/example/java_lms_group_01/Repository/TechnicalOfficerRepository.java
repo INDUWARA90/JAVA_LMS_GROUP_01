@@ -10,9 +10,6 @@ import com.example.java_lms_group_01.model.request.MedicalRequest;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Technical-officer facade for attendance, exam attendance, and medical operations.
- */
 public class TechnicalOfficerRepository {
 
     private final AttendanceRepository attendanceRepository = new AttendanceRepository();
