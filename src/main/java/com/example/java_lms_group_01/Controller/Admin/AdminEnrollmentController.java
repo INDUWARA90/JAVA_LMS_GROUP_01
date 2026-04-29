@@ -58,6 +58,7 @@ public class AdminEnrollmentController {
         colStatus.setCellValueFactory(d -> d.getValue().statusProperty());
     }
 
+    // Handles adding a new enrollment for the selected student.
     @FXML
     private void btnOnActionAddEnrollment() {
         EnrollmentRecord selected = selectedRecord();
@@ -71,12 +72,13 @@ public class AdminEnrollmentController {
                 showInfo("No available courses for the selected student.");
                 return;
             }
-
+            // Open dialog to select course
             Optional<Course> course = openEnrollmentDialog(selected, courses);
             if (course.isEmpty()) {
                 return;
             }
 
+            // Create enrollment in database
             if (adminRepository.createEnrollment(selected.getStudentReg(), course.get().getCourseCode())) {
                 loadBatchFilter(text(cmbBatchFilter.getValue()));
                 loadEnrollments();
@@ -89,16 +91,19 @@ public class AdminEnrollmentController {
         }
     }
 
+    // Marks selected enrollment as completed.
     @FXML
     private void btnOnActionMakeCompleted() {
         updateSelectedEnrollmentStatus("completed");
     }
 
+    // Marks selected enrollment as dropped.
     @FXML
     private void btnOnActionMakeDropped() {
         updateSelectedEnrollmentStatus("dropped");
     }
 
+    // Refreshes the table and filters.
     @FXML
     private void btnOnActionRefresh() {
         loadBatchFilter(text(cmbBatchFilter.getValue()));
@@ -131,6 +136,7 @@ public class AdminEnrollmentController {
         }
     }
 
+    // Updates status (completed/dropped) of selected enrollment.
     private void updateSelectedEnrollmentStatus(String status) {
         EnrollmentRecord selected = selectedRecord();
         if (selected == null) {
@@ -152,27 +158,36 @@ public class AdminEnrollmentController {
         } catch (IllegalArgumentException | SQLException e) {
             showError("Failed to update enrollment status.", e);
         }
+
     }
 
     // Open a small dialog to pick one course for the selected student.
     private Optional<Course> openEnrollmentDialog(EnrollmentRecord selected, List<Course> courses) {
+        // Create dialog
         Dialog<Course> dialog = new Dialog<>();
         dialog.setTitle("Add Enrollment");
         dialog.setHeaderText("Create a new active enrollment for " + selected.getStudentReg());
 
+        // Add buttons
         ButtonType save = new ButtonType("Add Enrollment", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
 
+        // ComboBox for selecting course
         ComboBox<String> cmbCourse = new ComboBox<>();
         List<String> labels = new ArrayList<>();
+
+        // Populate course labels
         for (Course course : courses) {
             labels.add(text(course.getCourseCode()) + " - " + text(course.getName()));
         }
         cmbCourse.getItems().setAll(labels);
 
+        // Layout using GridPane
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+
+        // Add UI elements
         grid.add(new Label("Student Reg:"), 0, 0);
         grid.add(new Label(text(selected.getStudentReg())), 1, 0);
         grid.add(new Label("Student Name:"), 0, 1);
@@ -180,12 +195,14 @@ public class AdminEnrollmentController {
         grid.add(new Label("Course:"), 0, 2);
         grid.add(cmbCourse, 1, 2);
 
+        // Handle result conversion
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(button -> {
             if (button != save) {
                 return null;
             }
             int index = cmbCourse.getSelectionModel().getSelectedIndex();
+            // Ensure course is selected
             if (index < 0) {
                 showInfo("Please select a course.");
                 return null;
@@ -193,10 +210,12 @@ public class AdminEnrollmentController {
             return courses.get(index);
         });
 
+        // Show dialog and return result
         Optional<Course> result = dialog.showAndWait();
         return result;
     }
 
+    // Returns selected row from table.
     private EnrollmentRecord selectedRecord() {
         EnrollmentRecord selected = tblEnrollments.getSelectionModel().getSelectedItem();
         if (selected == null) {
@@ -212,10 +231,6 @@ public class AdminEnrollmentController {
 
     private String text(TextField field) {
         return field.getText() == null ? "" : field.getText().trim();
-    }
-
-    private String text(ComboBox<String> comboBox) {
-        return comboBox.getValue() == null ? "" : comboBox.getValue().trim();
     }
 
     private void showInfo(String message) {

@@ -29,26 +29,30 @@ public class CourseFormController {
     @FXML
     private ComboBox<CourseType> cmbCourseType;
 
+    // Prepares form for creating a new course.
     public void setupForCreate() {
-        txtCourseCode.setDisable(false);
-        cmbCourseType.getItems().setAll(CourseType.values());
-        cmbCourseType.setValue(CourseType.THEORY);
+        txtCourseCode.setDisable(false); // Allow editing course code for new course
+        cmbCourseType.getItems().setAll(CourseType.values()); // Load all available course types into ComboBox
+        cmbCourseType.setValue(CourseType.THEORY); // Set default course type
     }
 
+    // Prepares form for editing an existing course.
     public void setupForEdit(Course course) {
-        setupForCreate();
+        setupForCreate(); // Initialize common setup
 
-        txtCourseCode.setText(course.getCourseCode());
-        txtCourseCode.setDisable(true);
+        txtCourseCode.setText(course.getCourseCode()); // Populate fields with existing course data
+        txtCourseCode.setDisable(true); // Disable editing of course code
         txtName.setText(course.getName());
         txtCredit.setText(String.valueOf(course.getCredit()));
         txtLecturerRegNo.setText(getSafeText(course.getLecturerRegistrationNo()));
         txtDepartment.setText(getSafeText(course.getDepartment()));
         txtSemester.setText(getSafeText(course.getSemester()));
-        cmbCourseType.setValue(course.getCourseTypeEnum());
+        cmbCourseType.setValue(course.getCourseTypeEnum()); // Set selected course type
     }
 
+    // Builds a Course object from form input.
     public Course buildCourse() {
+        // Retrieve and sanitize input values
         String courseCode = getTextFieldValue(txtCourseCode);
         String courseName = getTextFieldValue(txtName);
         String lecturerRegistrationNumber = getTextFieldValue(txtLecturerRegNo);

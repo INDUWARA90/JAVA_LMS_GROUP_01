@@ -118,7 +118,6 @@ public class EnrollmentRepository {
 
     public boolean createEnrollment(String studentReg, String courseCode) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement checkStudent = connection.prepareStatement("SELECT 1 FROM student WHERE registrationNo = ?")) {
@@ -159,17 +158,13 @@ public class EnrollmentRepository {
                     return created;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean updateEnrollmentStatus(int enrollmentId, String status) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 String currentStatus = null;
@@ -199,17 +194,13 @@ public class EnrollmentRepository {
                     return updated;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean enrollStudentToCourse(String studentReg, String courseCode, String status) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 String existingStatus = null;
@@ -271,10 +262,7 @@ public class EnrollmentRepository {
                     return updated;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }

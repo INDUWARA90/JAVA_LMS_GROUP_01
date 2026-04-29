@@ -17,7 +17,6 @@ public class MedicalRepository {
 
     public void addMedical(MedicalRequest request) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement medicalStatement = connection.prepareStatement("INSERT INTO medical (StudentReg, courseCode, tech_officer_reg, SubmissionDate, Description, session_type, attendance_id, approval_status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')")) {
@@ -36,13 +35,10 @@ public class MedicalRepository {
                     attendanceStatement.executeUpdate();
                 }
 
-                connection.commit();
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
+
         }
     }
 
@@ -65,8 +61,6 @@ public class MedicalRepository {
 
     public void deleteMedical(int medicalId, int attendanceId) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
-
             try {
                 try (PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM medical WHERE medical_id=?")) {
                     deleteStatement.setInt(1, medicalId);
@@ -78,12 +72,8 @@ public class MedicalRepository {
                     attendanceStatement.executeUpdate();
                 }
 
-                connection.commit();
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
@@ -187,7 +177,6 @@ public class MedicalRepository {
 
     public void updateMedicalDecision(String lecturerReg, int medicalId, int attendanceId, String approvalStatus, String attendanceStatus) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 int updated;
@@ -209,12 +198,8 @@ public class MedicalRepository {
                     attendanceStatement.executeUpdate();
                 }
 
-                connection.commit();
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }

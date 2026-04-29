@@ -141,90 +141,6 @@ public class ManageCoursesController implements Initializable {
         }
     }
 
-    @FXML
-    void btnOnActionEnrollStudent(ActionEvent event) {
-        Course selected = tblCourses.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showInfo("Please select a course to enroll a student.");
-            return;
-        }
-
-        try {
-            List<UserRecord> students = adminRepository.findStudents();
-            if (students.isEmpty()) {
-                showInfo("No students are available for enrollment.");
-                return;
-            }
-
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setTitle("Enroll Student");
-            dialog.setHeaderText("Enroll a student to " + selected.getCourseCode());
-
-            ButtonType save = new ButtonType("Enroll", ButtonBar.ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
-
-            ComboBox<UserRecord> cmbStudent = new ComboBox<>();
-            cmbStudent.getItems().setAll(students);
-            setupStudentComboBox(cmbStudent);
-
-            ComboBox<String> cmbEnrollmentStatus = new ComboBox<>();
-            cmbEnrollmentStatus.getItems().addAll("active", "completed", "dropped");
-            cmbEnrollmentStatus.setValue("active");
-
-            TextField txtCourseCode = new TextField(selected.getCourseCode());
-            txtCourseCode.setEditable(false);
-
-            GridPane grid = new GridPane();
-            grid.setHgap(10);
-            grid.setVgap(10);
-            grid.add(new Label("Course Code:"), 0, 0);
-            grid.add(txtCourseCode, 1, 0);
-            grid.add(new Label("Student:"), 0, 1);
-            grid.add(cmbStudent, 1, 1);
-            grid.add(new Label("Enrollment Status:"), 0, 2);
-            grid.add(cmbEnrollmentStatus, 1, 2);
-
-            dialog.getDialogPane().setContent(grid);
-            dialog.setResultConverter(button -> button == save ? save : null);
-
-            Button enrollButton = (Button) dialog.getDialogPane().lookupButton(save);
-            enrollButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
-                if (cmbStudent.getValue() == null) {
-                    showInfo("Please select a student.");
-                    actionEvent.consume();
-                    return;
-                }
-                if (cmbEnrollmentStatus.getValue() == null || cmbEnrollmentStatus.getValue().isBlank()) {
-                    showInfo("Please select an enrollment status.");
-                    actionEvent.consume();
-                }
-            });
-
-            Optional<ButtonType> result = dialog.showAndWait();
-            if (result.isEmpty() || result.get() != save) {
-                return;
-            }
-
-            UserRecord student = cmbStudent.getValue();
-            String status = cmbEnrollmentStatus.getValue();
-            if (student == null || status == null || status.isBlank()) {
-                return;
-            }
-
-            if (adminRepository.enrollStudentToCourse(
-                    student.getRegistrationNo(),
-                    selected.getCourseCode(),
-                    status
-            )) {
-                showInfo("Student enrolled successfully.");
-            } else {
-                showInfo("No enrollment was saved.");
-            }
-        } catch (SQLException e) {
-            showError("Failed to enroll student.", e);
-        }
-    }
-
     // Load courses based on the current filters.
     private void loadCourses(String department, String keyword) {
         try {
@@ -298,33 +214,6 @@ public class ManageCoursesController implements Initializable {
         dialog.setResultConverter(button -> button == save ? resultHolder[0] : null);
         Optional<Course> result = dialog.showAndWait();
         return result.orElse(null);
-    }
-
-    private void setupStudentComboBox(ComboBox<UserRecord> comboBox) {
-        comboBox.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(UserRecord student) {
-                return student == null ? "" : formatStudentLabel(student);
-            }
-
-            @Override
-            public UserRecord fromString(String string) {
-                return null;
-            }
-        });
-
-        comboBox.setCellFactory(listView -> new ListCell<>() {
-            @Override
-            protected void updateItem(UserRecord item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? "" : formatStudentLabel(item));
-            }
-        });
-    }
-
-    private String formatStudentLabel(UserRecord student) {
-        return text(student.getRegistrationNo()) + " - "
-                + (text(student.getFirstName()) + " " + text(student.getLastName())).trim();
     }
 
     private String text(String value) {

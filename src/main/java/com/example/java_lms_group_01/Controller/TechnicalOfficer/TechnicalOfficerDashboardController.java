@@ -125,6 +125,7 @@ public class TechnicalOfficerDashboardController {
         }
     }
 
+
     // Swaps the middle part of the screen with a new FXML page
     private void loadContent(String fxmlPath) {
         try {

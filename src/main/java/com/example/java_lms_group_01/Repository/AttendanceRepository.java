@@ -130,6 +130,7 @@ public class AttendanceRepository {
 
     public List<Attendance> findAttendance(String keyword) throws SQLException {
         String sql = "SELECT attendance_id, StudentReg, courseCode, SubmissionDate, session_type, attendance_status, tech_officer_reg FROM attendance";
+
         boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
 
         if (hasKeyword) {
@@ -147,7 +148,9 @@ public class AttendanceRepository {
             }
 
             try (ResultSet rs = statement.executeQuery()) {
+
                 List<Attendance> list = new ArrayList<>();
+
                 while (rs.next()) {
                     list.add(new Attendance(
                             String.valueOf(rs.getInt("attendance_id")),

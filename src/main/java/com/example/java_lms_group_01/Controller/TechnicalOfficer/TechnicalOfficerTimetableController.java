@@ -80,7 +80,7 @@ public class TechnicalOfficerTimetableController {
     private void refreshTableData(String department) {
         try {
             // Fetch filtered list (using null for lecturer and course filters)
-            List<Timetable> list = timetableRepository.findByFilters(department, null, null);
+            List<Timetable> list = timetableRepository.findByDepartment(department);
 
             // Update the table
             tblTimetables.getItems().setAll(list);

@@ -73,14 +73,18 @@ public class ManageTimetablesController implements Initializable {
         colAcademicYear.setCellValueFactory(d -> new SimpleStringProperty(text(d.getValue().getSessionType())));
     }
 
+    // Handles adding a new timetable.
     @FXML
     private void btnOnActionAddNewSchedule(ActionEvent event) {
         Timetable timetable = openTimetableDialog(null);
+
+        // If user cancels dialog, stop execution
         if (timetable == null) {
             return;
         }
 
         try {
+            // Save timetable in database
             if (adminRepository.saveTimetable(timetable)) {
                 refreshFiltersAndTable();
                 showInfo("Timetable added successfully.");
@@ -92,6 +96,7 @@ public class ManageTimetablesController implements Initializable {
         }
     }
 
+    // Handles deleting selected timetable.
     @FXML
     private void btnOnActionDeleteSchedule(ActionEvent event) {
         Timetable selected = tblTimetable.getSelectionModel().getSelectedItem();
@@ -100,15 +105,18 @@ public class ManageTimetablesController implements Initializable {
             return;
         }
 
+        // Show confirmation dialog
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setHeaderText("Delete Timetable");
         confirmation.setContentText("Delete timetable ID " + selected.getTimeTableId() + "?");
         Optional<ButtonType> answer = confirmation.showAndWait();
+        // If user cancels, stop execution
         if (answer.isEmpty() || answer.get() != ButtonType.OK) {
             return;
         }
 
         try {
+            // Delete timetable from database
             if (adminRepository.deleteTimetableById(selected.getTimeTableId())) {
                 refreshFiltersAndTable();
             } else {
@@ -119,6 +127,7 @@ public class ManageTimetablesController implements Initializable {
         }
     }
 
+    // Handles updating selected timetable.
     @FXML
     private void btnOnActionUpdateSchedule(ActionEvent event) {
         Timetable selected = tblTimetable.getSelectionModel().getSelectedItem();
@@ -154,6 +163,7 @@ public class ManageTimetablesController implements Initializable {
         }
     }
 
+    // Loads department filter options.
     private void loadDepartmentFilter(String selectedValue) {
         try {
             cmbFilterDepartment.getItems().clear();
@@ -165,6 +175,7 @@ public class ManageTimetablesController implements Initializable {
         }
     }
 
+    // Loads day filter options.
     private void loadDayFilter(String selectedValue) {
         try {
             cmbFilterSemester.getItems().clear();
@@ -176,6 +187,7 @@ public class ManageTimetablesController implements Initializable {
         }
     }
 
+    // Refresh filters and reload table.
     private void refreshFiltersAndTable() {
         String selectedDepartment = cmbFilterDepartment.getValue();
         String selectedDay = cmbFilterSemester.getValue();
@@ -184,15 +196,18 @@ public class ManageTimetablesController implements Initializable {
         applyFilters();
     }
 
+    // Applies current filter values.
     private void applyFilters() {
         String department = "All".equals(cmbFilterDepartment.getValue()) ? null : cmbFilterDepartment.getValue();
         String day = "All".equals(cmbFilterSemester.getValue()) ? null : cmbFilterSemester.getValue();
         loadTimetables(department, day, text(txtSearchAcademicYear));
     }
 
-    // Open one dialog for adding and editing timetables.
+    // Opens dialog for creating or editing timetable.
     private Timetable openTimetableDialog(Timetable existing) {
         boolean edit = existing != null;
+
+        // Get logged-in admin ID
         String adminRegNo = text(LoggedInAdmin.getRegistrationNo());
 
         Dialog<Timetable> dialog = new Dialog<>();
@@ -202,6 +217,7 @@ public class ManageTimetablesController implements Initializable {
         ButtonType save = new ButtonType(edit ? "Update" : "Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
 
+        // Input fields initialization
         TextField txtId = new TextField(edit ? text(existing.getTimeTableId()) : "");
         TextField txtDepartment = new TextField(edit ? text(existing.getDepartment()) : "");
         TextField txtLecId = new TextField(edit ? text(existing.getLecId()) : "");
@@ -214,9 +230,12 @@ public class ManageTimetablesController implements Initializable {
         cmbSessionType.getItems().addAll("theory", "practical");
         cmbSessionType.setValue(edit ? text(existing.getSessionType()) : null);
 
+        // Layout setup
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+
+        // Add components to grid
         grid.add(new Label("Timetable ID:"), 0, 0);
         grid.add(txtId, 1, 0);
         grid.add(new Label("Department:"), 0, 1);
@@ -293,6 +312,7 @@ public class ManageTimetablesController implements Initializable {
         return result.orElse(null);
     }
 
+    // Validation methods and helper methods remain unchanged (only comments added above)
     private boolean validateBasicFields(String timetableId, String department, String day, String sessionType) {
         if (timetableId.isBlank()) {
             showInfo("Timetable ID is required.");

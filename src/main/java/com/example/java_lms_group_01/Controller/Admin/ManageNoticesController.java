@@ -53,14 +53,15 @@ public class ManageNoticesController implements Initializable {
 
     @FXML
     void btnOnActionAddNewNotice(ActionEvent event) {
-        Notice notice = openNoticeDialog(null);
+        Notice notice = openNoticeDialog(null); // Open dialog to create notice
         if (notice == null) {
             return;
         }
 
         try {
+            // Save notice to database
             if (adminRepository.saveNotice(notice)) {
-                loadNotices(text(txtSearchNotice));
+                loadNotices(text(txtSearchNotice)); // Refresh table
                 showInfo("Notice added successfully.");
             } else {
                 showInfo("No notice was added.");
@@ -70,25 +71,32 @@ public class ManageNoticesController implements Initializable {
         }
     }
 
+    // Handles deleting selected notice.
     @FXML
     void btnOnActionDeleteNotice(ActionEvent event) {
         Notice selected = tblNotices.getSelectionModel().getSelectedItem();
+
+        // Ensure a notice is selected
         if (selected == null) {
             showInfo("Please select a notice to delete.");
             return;
         }
 
+        // Confirmation dialog before deletion
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setHeaderText("Delete Notice");
         confirmation.setContentText("Delete notice: " + selected.getTitle() + "?");
         Optional<ButtonType> answer = confirmation.showAndWait();
+
+        // If user cancels, stop operation
         if (answer.isEmpty() || answer.get() != ButtonType.OK) {
             return;
         }
 
         try {
+            // Delete notice from database
             if (adminRepository.deleteNoticeById(selected.getNoticeId())) {
-                loadNotices(text(txtSearchNotice));
+                loadNotices(text(txtSearchNotice)); // Refresh table
             } else {
                 showInfo("No notice was deleted.");
             }
@@ -97,6 +105,7 @@ public class ManageNoticesController implements Initializable {
         }
     }
 
+    // Handles viewing/editing selected notice.
     @FXML
     void btnOnActionViewNotice(ActionEvent event) {
         Notice selected = tblNotices.getSelectionModel().getSelectedItem();
@@ -111,8 +120,9 @@ public class ManageNoticesController implements Initializable {
         }
 
         try {
+            // Update notice in database
             if (adminRepository.updateNotice(updated)) {
-                loadNotices(text(txtSearchNotice));
+                loadNotices(text(txtSearchNotice)); // Refresh table
                 showInfo("Notice updated successfully.");
             } else {
                 showInfo("No notice was updated.");
@@ -125,25 +135,31 @@ public class ManageNoticesController implements Initializable {
     // Open one dialog for both adding and editing notices.
     private Notice openNoticeDialog(Notice existingNotice) {
         boolean edit = existingNotice != null;
-        String adminRegNo = text(LoggedInAdmin.getRegistrationNo());
+        String adminRegNo = text(LoggedInAdmin.getRegistrationNo()); // Get logged-in admin registration number
 
+        // Create dialog
         Dialog<Notice> dialog = new Dialog<>();
         dialog.setTitle(edit ? "Edit Notice" : "Create Notice");
         dialog.setHeaderText(edit ? "Update the notice details." : "Enter a new notice.");
 
+        // Buttons
         ButtonType save = new ButtonType(edit ? "Update" : "Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
 
+        // Input fields
         TextField txtTitle = new TextField(edit ? text(existingNotice.getTitle()) : "");
         TextArea txtContent = new TextArea(edit ? text(existingNotice.getContent()) : "");
         DatePicker datePicker = new DatePicker(edit ? existingNotice.getPublishDate() : LocalDate.now());
         TextField txtCreatedBy = new TextField(edit ? text(existingNotice.getCreatedBy()) : adminRegNo);
 
-        txtContent.setPrefRowCount(5);
+        txtContent.setPrefRowCount(5); // Set preferred size for content area
 
+        // Layout setup
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+
+        // Add UI components
         grid.add(new Label("Title:"), 0, 0);
         grid.add(txtTitle, 1, 0);
         grid.add(new Label("Content:"), 0, 1);
@@ -154,6 +170,8 @@ public class ManageNoticesController implements Initializable {
         grid.add(txtCreatedBy, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
+
+        // Convert dialog result to Notice object
         dialog.setResultConverter(button -> {
             if (button != save) {
                 return null;
@@ -189,6 +207,7 @@ public class ManageNoticesController implements Initializable {
             );
         });
 
+        // Show dialog and return result
         Optional<Notice> result = dialog.showAndWait();
         return result.orElse(null);
     }
@@ -219,6 +238,7 @@ public class ManageNoticesController implements Initializable {
         return area.getText() == null ? "" : area.getText().trim();
     }
 
+    // Converts LocalDate to string safely.
     private String dateText(LocalDate date) {
         return date == null ? "" : date.toString();
     }

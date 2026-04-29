@@ -64,7 +64,7 @@ public class TechnicalOfficerNoticesController {
         });
     }
 
-    methoad of getting notice from db
+    // methoad of getting notice from db
     private void loadAllNotices() {
         try {
             // Fetch the list from the repository

@@ -7,7 +7,7 @@ public class LoggedInTechnicalOfficer {
     //static veriable (whole app)
     private static String registrationNo;
 
-    //privete constructor
+    // privete constructor
     private LoggedInTechnicalOfficer() {
     }
 

@@ -145,6 +145,7 @@ public class ManageUsersController implements Initializable {
         handleSave(true);
     }
 
+    // Delete selected user.
     @FXML
     void btnOnActionDelete(ActionEvent event) {
         UserRole role = getActiveRole();
@@ -159,6 +160,7 @@ public class ManageUsersController implements Initializable {
             return;
         }
 
+        // Confirmation dialog
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setHeaderText("Delete " + role.getValue());
         confirmation.setContentText("Delete registration number " + selected.getRegistrationNo() + "?");
@@ -177,6 +179,7 @@ public class ManageUsersController implements Initializable {
         }
     }
 
+    // Handles both add and edit operations.
     private void handleSave(boolean edit) {
         UserRole role = getActiveRole();
         if (role == null) {
@@ -185,6 +188,8 @@ public class ManageUsersController implements Initializable {
         }
 
         UserRecord selected = null;
+
+        // If editing, get selected record
         if (edit) {
             selected = getSelectedRowByRole(role);
             if (selected == null) {
@@ -194,6 +199,7 @@ public class ManageUsersController implements Initializable {
         }
 
         try {
+            // Show dialog and collect data
             UserRecord row = showRoleDialog(role, selected);
             if (row == null) {
                 return;
@@ -211,6 +217,7 @@ public class ManageUsersController implements Initializable {
         }
     }
 
+    // Bind roles to corresponding tabs and tables.
     private void bindRoleViews() {
         tabs = new EnumMap<>(UserRole.class);
         tabs.put(UserRole.ADMIN, tabAdmins);
@@ -225,6 +232,7 @@ public class ManageUsersController implements Initializable {
         tables.put(UserRole.TECHNICAL_OFFICER, tblTechnicalOfficers);
     }
 
+    // Configure all tables.
     private void configureTables() {
         configureAdminTable();
         configureLecturerTable();
@@ -232,6 +240,7 @@ public class ManageUsersController implements Initializable {
         configureTechnicalOfficerTable();
     }
 
+    // Get currently active role tab.
     private UserRole getActiveRole() {
         Tab selectedTab = tabUsers.getSelectionModel().getSelectedItem();
         for (Map.Entry<UserRole, Tab> entry : tabs.entrySet()) {
@@ -241,11 +250,11 @@ public class ManageUsersController implements Initializable {
         }
         return null;
     }
-
+    // Get selected row from table based on role.
     private UserRecord getSelectedRowByRole(UserRole role) {
         return tableFor(role).getSelectionModel().getSelectedItem();
     }
-
+    // Load all user data into tables.
     private UserRecord showRoleDialog(UserRole role, UserRecord existing) {
         boolean edit = existing != null;
         Dialog<UserRecord> dialog = baseDialog(dialogTitle(role, edit), edit);
@@ -260,6 +269,7 @@ public class ManageUsersController implements Initializable {
         return dialog.showAndWait().orElse(null);
     }
 
+    // Bind table column to data property.
     private Dialog<UserRecord> baseDialog(String title, boolean edit) {
         Dialog<UserRecord> dialog = new Dialog<>();
         dialog.setTitle(title);
@@ -516,55 +526,6 @@ public class ManageUsersController implements Initializable {
         column.setCellValueFactory(d -> new SimpleStringProperty(display(extractor.apply(d.getValue()))));
     }
 
-    private void configureAdminTable() {
-        bind(adminId, UserRecord::getUserId);
-        bind(adminFirstName, UserRecord::getFirstName);
-        bind(adminLastName, UserRecord::getLastName);
-        bind(adminEmail, UserRecord::getEmail);
-        bind(adminPhone, UserRecord::getPhoneNumber);
-        bind(adminGender, UserRecord::getGender);
-        bind(adminDeptId, UserRecord::getAddress);
-        bind(adminAccessLevel, UserRecord::getRegistrationNo);
-    }
-
-    private void configureLecturerTable() {
-        bind(lecId, UserRecord::getUserId);
-        bind(lecFirstName, UserRecord::getFirstName);
-        bind(lecLastName, UserRecord::getLastName);
-        bind(lecEmail, UserRecord::getEmail);
-        bind(lecPhone, UserRecord::getPhoneNumber);
-        bind(lecGender, UserRecord::getGender);
-        bind(lecRegNo, UserRecord::getRegistrationNo);
-        bind(lecDeptId, UserRecord::getDepartment);
-        bind(lecPosition, UserRecord::getPosition);
-    }
-
-    private void configureStudentTable() {
-        bind(stuId, UserRecord::getUserId);
-        bind(stuFirstName, UserRecord::getFirstName);
-        bind(stuLastName, UserRecord::getLastName);
-        bind(stuEmail, UserRecord::getEmail);
-        bind(stuPhone, UserRecord::getPhoneNumber);
-        bind(stuGender, UserRecord::getGender);
-        bind(stuRegNo, UserRecord::getRegistrationNo);
-        bind(stuDeptId, UserRecord::getDepartment);
-        bind(stuBatchId, UserRecord::getBatch);
-        bind(stuStatus, UserRecord::getStatus);
-    }
-
-    private void configureTechnicalOfficerTable() {
-        bind(toId, UserRecord::getUserId);
-        bind(toFirstName, UserRecord::getFirstName);
-        bind(toLastName, UserRecord::getLastName);
-        bind(toEmail, UserRecord::getEmail);
-        bind(toPhone, UserRecord::getPhoneNumber);
-        bind(toGender, UserRecord::getGender);
-        bind(toDeptId, UserRecord::getAddress);
-        bind(toPosition, UserRecord::getRegistrationNo);
-        bind(toLab, UserRecord::getDateOfBirth);
-        bind(toShift, UserRecord::getRole);
-    }
-
     private String display(Object value) {
         return value == null ? "" : value.toString();
     }
@@ -575,10 +536,6 @@ public class ManageUsersController implements Initializable {
 
     private String value(Double value) {
         return value == null ? "" : String.format("%.2f", value);
-    }
-
-    private String value(LocalDate value) {
-        return value == null ? "" : value.toString();
     }
 
     private String value(TextField textField) {
@@ -656,4 +613,55 @@ public class ManageUsersController implements Initializable {
             TextField positionField
     ) {
     }
+
+    //  TABLE CONFIGURATIONS
+    private void configureAdminTable() {
+        bind(adminId, UserRecord::getUserId);
+        bind(adminFirstName, UserRecord::getFirstName);
+        bind(adminLastName, UserRecord::getLastName);
+        bind(adminEmail, UserRecord::getEmail);
+        bind(adminPhone, UserRecord::getPhoneNumber);
+        bind(adminGender, UserRecord::getGender);
+        bind(adminDeptId, UserRecord::getAddress);
+        bind(adminAccessLevel, UserRecord::getRegistrationNo);
+    }
+
+    private void configureLecturerTable() {
+        bind(lecId, UserRecord::getUserId);
+        bind(lecFirstName, UserRecord::getFirstName);
+        bind(lecLastName, UserRecord::getLastName);
+        bind(lecEmail, UserRecord::getEmail);
+        bind(lecPhone, UserRecord::getPhoneNumber);
+        bind(lecGender, UserRecord::getGender);
+        bind(lecRegNo, UserRecord::getRegistrationNo);
+        bind(lecDeptId, UserRecord::getDepartment);
+        bind(lecPosition, UserRecord::getPosition);
+    }
+
+    private void configureStudentTable() {
+        bind(stuId, UserRecord::getUserId);
+        bind(stuFirstName, UserRecord::getFirstName);
+        bind(stuLastName, UserRecord::getLastName);
+        bind(stuEmail, UserRecord::getEmail);
+        bind(stuPhone, UserRecord::getPhoneNumber);
+        bind(stuGender, UserRecord::getGender);
+        bind(stuRegNo, UserRecord::getRegistrationNo);
+        bind(stuDeptId, UserRecord::getDepartment);
+        bind(stuBatchId, UserRecord::getBatch);
+        bind(stuStatus, UserRecord::getStatus);
+    }
+
+    private void configureTechnicalOfficerTable() {
+        bind(toId, UserRecord::getUserId);
+        bind(toFirstName, UserRecord::getFirstName);
+        bind(toLastName, UserRecord::getLastName);
+        bind(toEmail, UserRecord::getEmail);
+        bind(toPhone, UserRecord::getPhoneNumber);
+        bind(toGender, UserRecord::getGender);
+        bind(toDeptId, UserRecord::getAddress);
+        bind(toPosition, UserRecord::getRegistrationNo);
+        bind(toLab, UserRecord::getDateOfBirth);
+        bind(toShift, UserRecord::getRole);
+    }
+
 }

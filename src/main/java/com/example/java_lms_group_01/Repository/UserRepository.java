@@ -151,7 +151,6 @@ public class UserRepository {
 
     public boolean createAdmin(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("INSERT INTO users (user_id, firstName, lastName, email, address, phoneNumber, dateOfBirth, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
@@ -170,21 +169,16 @@ public class UserRepository {
                     adminStatement.setString(1, row.getRegistrationNo());
                     adminStatement.setString(2, PasswordUtil.hashPassword(row.getPassword()));
                     boolean inserted = adminStatement.executeUpdate() > 0;
-                    connection.commit();
                     return inserted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean createLecturer(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("INSERT INTO users (user_id, firstName, lastName, email, address, phoneNumber, dateOfBirth, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
@@ -205,21 +199,16 @@ public class UserRepository {
                     lecturerStatement.setString(3, row.getDepartment());
                     lecturerStatement.setString(4, row.getPosition());
                     boolean inserted = lecturerStatement.executeUpdate() > 0;
-                    connection.commit();
                     return inserted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean createStudent(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("INSERT INTO users (user_id, firstName, lastName, email, address, phoneNumber, dateOfBirth, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
@@ -242,21 +231,16 @@ public class UserRepository {
                     if (row.getGpa() == null) studentStatement.setNull(5, Types.DECIMAL); else studentStatement.setDouble(5, row.getGpa());
                     studentStatement.setString(6, row.getStatus());
                     boolean inserted = studentStatement.executeUpdate() > 0;
-                    connection.commit();
                     return inserted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean createTechnicalOfficer(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("INSERT INTO users (user_id, firstName, lastName, email, address, phoneNumber, dateOfBirth, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
@@ -276,21 +260,16 @@ public class UserRepository {
                     technicalOfficerStatement.setString(2, PasswordUtil.hashPassword(row.getPassword()));
                     technicalOfficerStatement.setString(3, row.getDepartment());
                     boolean inserted = technicalOfficerStatement.executeUpdate() > 0;
-                    connection.commit();
                     return inserted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean updateAdmin(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("UPDATE users SET firstName=?, lastName=?, email=?, address=?, phoneNumber=?, dateOfBirth=?, gender=? WHERE user_id=?")) {
@@ -313,20 +292,15 @@ public class UserRepository {
                     }
                 }
 
-                connection.commit();
                 return true;
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean updateLecturer(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("UPDATE users SET firstName=?, lastName=?, email=?, address=?, phoneNumber=?, dateOfBirth=?, gender=? WHERE user_id=?")) {
@@ -356,20 +330,16 @@ public class UserRepository {
                     }
                 }
 
-                connection.commit();
                 return true;
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean updateStudent(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
+
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("UPDATE users SET firstName=?, lastName=?, email=?, address=?, phoneNumber=?, dateOfBirth=?, gender=? WHERE user_id=?")) {
@@ -401,20 +371,15 @@ public class UserRepository {
                     }
                 }
 
-                connection.commit();
                 return true;
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean updateTechnicalOfficer(UserRecord row) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("UPDATE users SET firstName=?, lastName=?, email=?, address=?, phoneNumber=?, dateOfBirth=?, gender=? WHERE user_id=?")) {
@@ -443,20 +408,15 @@ public class UserRepository {
                     }
                 }
 
-                connection.commit();
                 return true;
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean deleteAdmin(String registrationNo) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement roleStatement = connection.prepareStatement("DELETE FROM admin WHERE registrationNo=?")) {
@@ -467,21 +427,16 @@ public class UserRepository {
                 try (PreparedStatement userStatement = connection.prepareStatement("DELETE FROM users WHERE user_id=?")) {
                     userStatement.setString(1, registrationNo);
                     boolean deleted = userStatement.executeUpdate() > 0;
-                    connection.commit();
                     return deleted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean deleteLecturer(String registrationNo) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement roleStatement = connection.prepareStatement("DELETE FROM lecturer WHERE registrationNo=?")) {
@@ -492,21 +447,16 @@ public class UserRepository {
                 try (PreparedStatement userStatement = connection.prepareStatement("DELETE FROM users WHERE user_id=?")) {
                     userStatement.setString(1, registrationNo);
                     boolean deleted = userStatement.executeUpdate() > 0;
-                    connection.commit();
                     return deleted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean deleteStudent(String registrationNo) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement roleStatement = connection.prepareStatement("DELETE FROM student WHERE registrationNo=?")) {
@@ -517,21 +467,16 @@ public class UserRepository {
                 try (PreparedStatement userStatement = connection.prepareStatement("DELETE FROM users WHERE user_id=?")) {
                     userStatement.setString(1, registrationNo);
                     boolean deleted = userStatement.executeUpdate() > 0;
-                    connection.commit();
                     return deleted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public boolean deleteTechnicalOfficer(String registrationNo) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement roleStatement = connection.prepareStatement("DELETE FROM tech_officer WHERE registrationNo=?")) {
@@ -542,14 +487,10 @@ public class UserRepository {
                 try (PreparedStatement userStatement = connection.prepareStatement("DELETE FROM users WHERE user_id=?")) {
                     userStatement.setString(1, registrationNo);
                     boolean deleted = userStatement.executeUpdate() > 0;
-                    connection.commit();
                     return deleted;
                 }
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
@@ -661,7 +602,6 @@ public class UserRepository {
 
     public void updateStudentProfile(String registrationNo, String email, String phone, String address, String image, String currentPw, String newPw) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement statement = connection.prepareStatement("UPDATE users SET email=?, phoneNumber=?, address=? WHERE user_id=?")) {
@@ -696,19 +636,15 @@ public class UserRepository {
                 }
 
                 userImageRepository.upsertImagePath(connection, registrationNo, image);
-                connection.commit();
+
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public void updateLecturerProfile(String registrationNo, String firstName, String lastName, String email, String address, String phone, String department, String position, String image) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement userStatement = connection.prepareStatement("UPDATE users SET firstName=?, lastName=?, email=?, address=?, phoneNumber=? WHERE user_id=?")) {
@@ -729,19 +665,15 @@ public class UserRepository {
                 }
 
                 userImageRepository.upsertImagePath(connection, registrationNo, image);
-                connection.commit();
+
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }
 
     public void updateTechnicalOfficerProfile(String registrationNo, String firstName, String lastName, String email, String phone, String address, String image) throws SQLException {
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            connection.setAutoCommit(false);
 
             try {
                 try (PreparedStatement statement = connection.prepareStatement("UPDATE users SET firstName=?, lastName=?, email=?, phoneNumber=?, address=? WHERE user_id=?")) {
@@ -755,12 +687,8 @@ public class UserRepository {
                 }
 
                 userImageRepository.upsertImagePath(connection, registrationNo, image);
-                connection.commit();
             } catch (SQLException | RuntimeException e) {
-                connection.rollback();
                 throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         }
     }

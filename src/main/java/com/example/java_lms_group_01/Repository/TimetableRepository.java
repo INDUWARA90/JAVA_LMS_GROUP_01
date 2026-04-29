@@ -63,6 +63,45 @@ public class TimetableRepository {
         }
     }
 
+    public List<Timetable> findByDepartment(String department) throws SQLException {
+        String sql = "SELECT time_table_id, department, lec_id, courseCode, admin_id, day, start_time, end_time, session_type FROM timetable WHERE 1=1";
+
+        // Only department filter
+        if (department != null && !department.trim().isEmpty()) {
+            sql += " AND department = ?";
+        }
+
+        sql += " ORDER BY day, start_time, time_table_id";
+
+        try (Connection connection = DBConnection.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Set parameter only if department exists
+            if (department != null && !department.trim().isEmpty()) {
+                statement.setString(1, department.trim());
+            }
+
+            try (ResultSet rs = statement.executeQuery()) {
+                List<Timetable> timetables = new ArrayList<>();
+
+                while (rs.next()) {
+                    timetables.add(new Timetable(
+                            rs.getString("time_table_id"),
+                            rs.getString("department"),
+                            rs.getString("lec_id"),
+                            rs.getString("courseCode"),
+                            rs.getString("admin_id"),
+                            rs.getString("day"),
+                            rs.getTime("start_time") == null ? null : rs.getTime("start_time").toLocalTime(),
+                            rs.getTime("end_time") == null ? null : rs.getTime("end_time").toLocalTime(),
+                            rs.getString("session_type")
+                    ));
+                }
+                return timetables;
+            }
+        }
+    }
+
     public List<String> findAllDepartments() throws SQLException {
         String sql = "SELECT DISTINCT department FROM timetable WHERE department IS NOT NULL AND TRIM(department) <> '' ORDER BY department";
 
