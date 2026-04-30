@@ -41,6 +41,7 @@ public class Lecturer extends User implements LecturerRole {
         this.password = password;
     }
 
+    // object class inside at this method [Object inside values that created show ]
     @Override
     public String toString() {
         return "Lecturer{" +

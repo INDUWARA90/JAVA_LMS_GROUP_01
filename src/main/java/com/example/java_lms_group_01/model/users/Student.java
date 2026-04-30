@@ -56,4 +56,17 @@ public class Student extends User implements StudentRole {
     public void setRegistrationNo(String registrationNo) {
         this.registrationNo = registrationNo;
     }
+
+    // object class inside at this method [Object inside values that created show ]
+    @Override
+    public String toString() {
+        return "Student{" +
+                "registrationNo='" + registrationNo + '\'' +
+                ", password='" + password + '\'' +
+                ", batch='" + batch + '\'' +
+                ", gpa=" + gpa +
+                ", status='" + status + '\'' +
+                '}';
+    }
+
 }
